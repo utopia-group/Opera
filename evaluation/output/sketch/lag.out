@@ -1,0 +1,13 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/stats/lag.sk
+  UNSATISFIABLE ASSERTION Assert at lag.sk:46 (0)
+
+*** Rejected
+    [0;31m[1699813498.8410 - ERROR] [SKETCH] Sketch Not Resolved Error:   UNSATISFIABLE ASSERTION Assert at lag.sk:46 (0)
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1699813498.8560 - DEBUG] [SKETCH] stack trace written to file: /home/vscode/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1699813498.8561 - DEBUG] Backend solver input file at /home/vscode/.sketch/tmp/lag.sk/input0.tmp[0m
+Total time = 1123
+time=1

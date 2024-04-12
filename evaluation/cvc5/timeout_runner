@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+if [ -z ${proc_timeout} ]; then
+    echo "proc_timeout not set!" 1>&2
+    exit 64
+fi
+
+tmpfile=$(mktemp)
+start_time="$(date -u +%s)"
+
+# https://unix.stackexchange.com/questions/57667/why-cant-i-kill-a-timeout-called-from-a-bash-script-with-a-keystroke
+trap 'kill -INT -$pid' INT
+timeout --foreground -k 10 ${proc_timeout} cvc5 $1 >$tmpfile 2>&1 &
+pid=$!
+wait $pid
+
+end_time="$(date -u +%s)"
+elapsed="$(($end_time-$start_time))"
+echo "time=${elapsed}" >> $tmpfile
+
+cat $tmpfile > $2
+rm $tmpfile

@@ -1,0 +1,51 @@
+(set-logic HO_UFDTNIRA)
+
+(declare-var x Real)
+(declare-var y Real)
+(declare-var z Real)
+
+(declare-var log (-> Real Real))
+
+(constraint (= (log 1.0) 0.0))
+(constraint (= (log (* x y)) (+ (log x) (log y))))
+(constraint (= (log (/ x y)) (- (log x) (log y))))
+
+(synth-fun incr_entropy ((prev_ent Real) (prev_sum Real) (__x Real) (log (-> Real Real))) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_ent
+     prev_sum
+     __x
+     (- R)
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)
+     (log R)))))
+
+(declare-datatype List 
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun-rec entropy ((xs List) (log (-> Real Real))) Real
+  (let ((s (sum xs)))
+    (match xs
+      ((nil 0.0)
+       ((cons hd tl) (+ (* (- (log (/ hd s))) (/ hd s)) (entropy tl log)))))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+    (= (entropy xs log)
+       (incr_entropy (entropy (tl xs) log) (sum (tl xs)) x log))))
+
+(check-synth)

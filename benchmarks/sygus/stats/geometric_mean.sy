@@ -1,0 +1,67 @@
+(set-logic HO_UFDTNIRA)
+
+(declare-var x Real)
+(declare-var y Real)
+(declare-var z Real)
+
+(declare-var log (-> Real Real))
+(declare-var exp (-> Real Real))
+
+(constraint (= (log 1.0) 0.0))
+(constraint (= (exp 0.0) 1.0))
+(constraint (= (exp (log x)) x))
+(constraint (= (log (exp x)) x))
+(constraint (= (exp (+ x y)) (* (exp x) (exp y))))
+(constraint (= (log (* x y)) (+ (log x) (log y))))
+(constraint (= (exp (- x y)) (/ (exp x) (exp y))))
+(constraint (= (log (/ x y)) (- (log x) (log y))))
+
+(synth-fun geometric_mean_online ((prev_out Real) (prev_len Int) (prev_s Real) (__x Real) (log (-> Real Real)) (exp (-> Real Real))) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_s
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)
+     (exp R)
+     (log R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum_log ((xs List) (log (-> Real Real))) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (log hd) (sum_log tl log))))))
+
+
+(define-fun geometric_mean ((xs List) (log (-> Real Real)) (exp (-> Real Real))) Real
+  (exp (/ (len xs) (sum_log xs log)))
+)
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+
+(assume (>= xs0 0))
+(assume (>= xs1 0))
+(assume (>= xs2 0))
+(assume (>= x 0))
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+    (= (geometric_mean xs log exp)
+       (geometric_mean_online (geometric_mean (tl xs) log exp) (len (tl xs)) (sum_log (tl xs) log) x log exp))))
+
+(check-synth)

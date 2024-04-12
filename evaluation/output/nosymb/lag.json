@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_r x__ -> (let S = {} in let S = let S = S{r = prev_out} in S{r = python([*r[1:], x])} in S[r], (S[r]))",
+  "qe_time": 9.5367431640625e-07,
+  "syn_time": 0.0016429424285888672,
+  "parse_time": 0.0014700889587402344,
+  "test_time": 0.5307776927947998,
+  "total_time": 0.5339000225067139,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    16
+  ],
+  "offline_ast_size": 17,
+  "online_ast_size": 13
+}

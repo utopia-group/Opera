@@ -1,0 +1,85 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Auction ((auction
+                           (aseller Int)
+                           (acategory Int)
+                           (aid Int)
+)))
+
+(declare-datatype Bid ((bid
+                       (auction Int)
+                       (bidder Int)
+                       (price Int)
+                       (dateTime Int)
+                       (extra Int)
+)))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(declare-datatype AuctionList
+  ((anil)
+   (acons (ahd Auction) (atl AuctionList))))
+
+(define-fun add ((xs AuctionList) (x Auction)) AuctionList
+  (acons x xs))
+
+(define-fun-rec find_max_bid ((bs BidList) (auction_id Int)) Bid
+  (match bs
+    ((bnil (bid auction_id 0 0 0 0))
+     ((bcons hd tl) 
+       (ite (and (= (auction hd) auction_id)
+                 (> (price hd) (price (find_max_bid tl auction_id))))
+            hd
+            (find_max_bid tl auction_id))))))
+
+(define-fun-rec query ((xs AuctionList) (bids BidList)) AuctionList
+  (match xs
+    ((anil anil)
+     ((acons hd tl) 
+       (acons (auction (aseller hd) (acategory hd) (extra (find_max_bid bids (aid hd)))) 
+              (query tl bids))))))
+
+(synth-fun query_online ((prev_out AuctionList) (bids BidList) (__x Auction)) AuctionList
+  ((L AuctionList) (A Auction) (B Bid) (I Int) (C Bool))
+  (
+    (L AuctionList
+      (
+       prev_out
+       (add L __x)))
+    (A Auction (
+      (auction I I I)))
+    (B Bid 
+      ((bid I I I I I)))
+    (I Int (
+      (extra B)
+      (+ I I)
+      (- I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (= I I)
+      (not C)
+      (> I I)
+      (<= I I)
+      (>= I I)))
+    ))
+
+(declare-var xs0 Auction)
+(declare-var xs1 Auction)
+(declare-var xs2 Auction)
+(declare-var x Auction)
+
+(constraint
+  (
+    let (
+      (old_xs (acons xs0 (acons xs1 (acons xs2 anil))))
+      (new_xs (add (acons x (acons xs0 (acons xs1 (acons xs2 anil)))) x))
+    )
+    (= (query new_xs bnil)
+       (query_online (query old_xs bnil) bnil x))
+  ))
+
+(check-synth)

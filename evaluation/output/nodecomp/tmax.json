@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_mn x__ -> (x__ if (prev_mn - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_out, (x__ if (prev_mn - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_mn))",
+  "qe_time": 15.348010063171387,
+  "syn_time": 0.2612330913543701,
+  "parse_time": 0.0008807182312011719,
+  "test_time": 0.14960217475891113,
+  "total_time": 15.759736061096191,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    12,
+    12
+  ],
+  "offline_ast_size": 14,
+  "online_ast_size": 26
+}

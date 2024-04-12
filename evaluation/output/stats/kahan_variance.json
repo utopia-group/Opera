@@ -1,0 +1,21 @@
+{
+  "solution": "\\prev_out prev_n prev_prev_mu prev_y prev_t prev_cmu prev_mu prev_csigma_sq prev_sigma_sq x__ -> (let S = {} in let S = S{n = 0; mu = 0.0; cmu = 0.0; csigma_sq = 0.0; sigma_sq = 0.0} in let S = S{n = (prev_n + 1); prev_mu = prev_csigma_sq*2.0; y = ((prev_cmu*(prev_n + 3) - x__)/(prev_n + 1)); t = mu; cmu = csigma_sq; mu = sigma_sq; csigma_sq = cmu; sigma_sq = mu} in (S[sigma_sq] / S[n]), ((prev_n + 1), prev_csigma_sq*2.0, ((prev_cmu*(prev_n + 3) - x__)/(prev_n + 1)), mu, csigma_sq, sigma_sq, cmu, mu))",
+  "qe_time": 25.89794921875,
+  "syn_time": 12.553362131118774,
+  "parse_time": 0.002749919891357422,
+  "test_time": 3.433887004852295,
+  "total_time": 41.887954235076904,
+  "num_exprs_to_synthesize": 8,
+  "exprs_sizes": [
+    1,
+    1,
+    1,
+    2,
+    2,
+    1,
+    1,
+    10
+  ],
+  "offline_ast_size": 47,
+  "online_ast_size": 45
+}

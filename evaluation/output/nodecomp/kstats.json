@@ -1,0 +1,18 @@
+{
+  "solution": "\\prev_out prev_s1 prev_s2 prev_s3 prev_len x__ -> (((prev_s1**3 + 3*prev_s1**2*x__ + x__**3*(prev_len**2/2 - prev_len/2) + prev_s1*prev_s2*(-3*prev_len**2/2 - 3*prev_len/2)/prev_len + prev_s1*x__**2*(-3*prev_len**2/2 + 3*prev_len/2)/prev_len + prev_s2*x__*(-3*prev_len**2/2 - 3*prev_len/2)/prev_len + prev_s3*(prev_len**3/2 + prev_len**2 + prev_len/2)/prev_len)/(prev_len**3/2 - prev_len/2)), (prev_s1 + x__, prev_s2 + x__**2.0, prev_s3 + x__**3.0, (prev_len + 1)))",
+  "qe_time": 4.224368095397949,
+  "syn_time": 136.51703596115112,
+  "parse_time": 0.004593849182128906,
+  "test_time": 0.550029993057251,
+  "total_time": 141.29603505134583,
+  "num_exprs_to_synthesize": 5,
+  "exprs_sizes": [
+    103,
+    2,
+    3,
+    4,
+    4
+  ],
+  "offline_ast_size": 36,
+  "online_ast_size": 121
+}

@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_mn prev_mx x__ -> (let S = {} in let S = S{mn = 1000; mx = 0} in let S = S{mn = x__ if (prev_mx - prev_out - x__ > 0.0) else prev_mn; mx = prev_mx if (prev_mx - x__ > 0.0) else x__} in (S[mx] - S[mn]), (x__ if (prev_mx - prev_out - x__ > 0.0) else prev_mn, prev_mx if (prev_mx - x__ > 0.0) else x__))",
+  "qe_time": 13.212472915649414,
+  "syn_time": 1.9789600372314453,
+  "parse_time": 0.0012059211730957031,
+  "test_time": 0.18969011306762695,
+  "total_time": 15.382336854934692,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    9,
+    7
+  ],
+  "offline_ast_size": 17,
+  "online_ast_size": 27
+}

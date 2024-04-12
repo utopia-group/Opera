@@ -1,0 +1,82 @@
+?expr : number
+     | string
+     | bool
+     | ident -> var
+     | binop
+     | call
+     | lam
+     | let
+     | ite
+     | list
+     | tuple
+     | unknown
+     | map_update
+     | map
+     | map_get
+     | "(" expr ")"
+
+number : SIGNED_NUMBER
+
+string : ESCAPED_STRING
+bool : /(true|false)/
+ident : CNAME
+
+// operators
+?binop : binop6
+op : /\+|-|\*|\/|==|!=|<|>|<=|>=|&&|\|\||\^|::/
+
+?binop0 : expr "^" binop0 -> pow
+        | expr
+
+?binop1 : binop1 "*" binop0 -> mul
+        | binop1 "/" binop0 -> div
+        | binop0
+
+?binop2 : binop2 "+" binop1 -> add
+        | binop2 "-" binop1 -> sub
+        | binop1
+
+?binop3 : binop3 "::" binop2 -> cons
+        | binop2
+
+?binop4 : binop4 "==" binop3 -> eq
+        | binop4 "!=" binop3 -> neq
+        | binop4 "<" binop3  -> le
+        | binop4 ">" binop3  -> ge
+        | binop4 "<=" binop3 -> leq
+        | binop4 ">=" binop3 -> geq
+        | binop3
+
+?binop5 : binop5 "&&" binop4 -> _and
+        | binop4
+     
+?binop6 : binop6 "||" binop5 -> _or
+        | binop5
+
+// lambda functions
+call : expr "(" expr_list ")"
+lam : "\\" param_list "->" expr
+param_list : ident+
+
+let : "let" ident "=" expr "in" expr
+ite : "if" expr "then" expr "else" expr
+
+list : "[" expr_list "]"
+tuple : "<<" expr_list ">>"
+unknown : "??"
+
+// maps
+map : "{" [key_value (";" key_value)*] "}"
+map_update : expr "{" [key_value (";" key_value)*] "}"
+map_get : expr "[" ident "]"
+
+// helpers
+expr_list : [expr ("," expr)*] 
+key_value : ident "=" expr
+
+%import common.ESCAPED_STRING
+%import common.SIGNED_NUMBER
+%import common.CNAME
+
+%import common.WS
+%ignore WS

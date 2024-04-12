@@ -1,0 +1,44 @@
+;; foldl (\x -> \y -> x + y) 0
+;; 
+;; EApp(EApp(
+;;    VPreludeFunc("foldl"), 
+;;    ELam("x", ELam("y", EBinOp(EVar("x"), BinOpKinds.ADD, EVar("y"))))),
+;;    EInt(0),
+;; )
+
+(set-logic UFDTNIRA)
+
+(synth-fun sum_online ((prev_out Real) (prev_len Int) (prev_s Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_s
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(constraint
+  (forall ((xs List))
+    (=> (not ((_ is nil) xs))
+        (= (sum xs)
+           (sum_online (sum (tl xs)) (len (tl xs)) (sum (tl xs)) (hd xs))))))
+
+(check-synth)

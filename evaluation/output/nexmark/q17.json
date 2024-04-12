@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_key prev_report x__ -> (let S = {} in let S = let S = S{key = prev_key; report = prev_report} in S{key = (python(x['auction']), (python(x['dateTime'].year), python(x['dateTime'].month), python(x['dateTime'].day))); report = python(defaultdict(lambda: [0, 0, 0, 0, float('inf'), float('-inf'), 0, 0], {**report, key: [report[key][0] + 1, report[key][1] + (1 if x['price'] < 10000 else 0), report[key][2] + (1 if 10000 <= x['price'] < 1000000 else 0), report[key][3] + (1 if x['price'] >= 1000000 else 0), min(report[key][4], x['price']), max(report[key][5], x['price']), report[key][6] + x['price'], 0]}))} in python({key: [value[0], value[1], value[2], value[3], value[4], value[5], value[6], value[6] / value[0]] for key, value in report.items()}), (S[key], S[report]))",
+  "qe_time": 0.0003337860107421875,
+  "syn_time": 0.005284309387207031,
+  "parse_time": 0.019347667694091797,
+  "test_time": 7.9492950439453125,
+  "total_time": 7.974273920059204,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    105,
+    0
+  ],
+  "offline_ast_size": 137,
+  "online_ast_size": 130
+}

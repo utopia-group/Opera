@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_alpha prev_s x__ -> (let S = {} in let S = let S = S{alpha = (prev_alpha)} in S{alpha = if (x > alpha) then x else alpha} in let S = let S = S{s = (exp(prev_out - alpha))} in S{s = (s + exp((x - alpha)))} in (S[alpha] + log(S[s])), (S[alpha], S[s]))",
+  "qe_time": 3.0994415283203125e-06,
+  "syn_time": 1507.1998229026794,
+  "parse_time": 0.0029153823852539062,
+  "test_time": 0.41417574882507324,
+  "total_time": 1507.6169242858887,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    10,
+    13
+  ],
+  "offline_ast_size": 22,
+  "online_ast_size": 25
+}

@@ -1,0 +1,42 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 4";
+pragma options "--bnd-unroll-amnt 10";
+
+generator int simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| choices() (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+int nobs(int len, double[len] in) {
+    int n = 0;
+    for (int i = 0; i < len; i++) {
+        n += 1;
+    }
+    return n;
+}
+
+int nobs_online(int prev_out, double x) {
+    int x_ = _cast_double_int(x);
+
+    generator int gen() {
+        return {| prev_out | x_ | ?? |};
+    }
+    return simple_expr(gen, 3);
+}
+
+// failed with decimals interpreted as fixpoint, 10m timeout
+harness void main(int len, double[len] in) {
+    assume len > 2;
+    assume len < 6;
+
+    int prev_len = len - 1;
+    int prev_out = nobs(prev_len, in[0::len-1]);
+    int new_out = nobs(len, in);
+
+    assert new_out == nobs_online(prev_out, in[len-1]);
+}

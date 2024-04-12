@@ -1,0 +1,57 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| simple_expr(choices, bnd-1) (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+double sum(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += in[i];
+    }
+    return s;
+}
+
+double sq_sum(int len, double[len] in) {
+    double sq_s = 0.0;
+    for (int i = 0; i < len; i++) {
+        sq_s += in[i] * in[i];
+    }
+    return sq_s;
+}
+
+double kstatvar_1(int len, double[len] in) {
+    double s1 = sum(len, in);
+    double s2 = sq_sum(len, in);
+    double l_ = _cast_int_double(len);
+    double l_diff = _cast_int_double(len - 1);
+    return ((l_ * s2 - s1 * s1) / (l_ * l_diff)) / l_;
+}
+
+double kstatvar_1_online(double prev_out, double prev_s1, double prev_s2, int prev_len, double x) {
+    double l_ = _cast_int_double(prev_len);
+    generator double gen() {
+        return {| prev_out | prev_s1 | x | prev_s2 | l_ | 1.0 | 2.0 | 3.0 |};
+    }
+    return simple_expr(gen, 5);
+}
+
+harness void main(double[3] in) {
+    int len = 3;
+
+    int prev_len = len - 1;
+    double prev_out = kstatvar_1(prev_len, in[0::len-1]);
+    double prev_s1 = sum(prev_len, in[0::len-1]);
+    double prev_s2 = sq_sum(prev_len, in[0::len-1]);
+    double new_out = kstatvar_1(len, in);
+
+    assert new_out == kstatvar_1_online(prev_out, prev_s1, prev_s2, prev_len, in[len-1]);
+}

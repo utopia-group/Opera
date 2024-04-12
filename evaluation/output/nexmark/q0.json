@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_new_bid x__ -> (let S = {} in let S = let S = S{new_bid = prev_new_bid} in S{new_bid = python([*new_bid, x])} in S[new_bid], (S[new_bid]))",
+  "qe_time": 0.0003819465637207031,
+  "syn_time": 0.0014526844024658203,
+  "parse_time": 0.0012631416320800781,
+  "test_time": 0.5100359916687012,
+  "total_time": 0.5131402015686035,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    10
+  ],
+  "offline_ast_size": 11,
+  "online_ast_size": 11
+}

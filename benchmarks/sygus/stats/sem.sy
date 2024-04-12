@@ -1,0 +1,62 @@
+(set-logic HO_UFDTNIRA)
+
+(declare-var x Real)
+(declare-var y Real)
+(declare-var z Real)
+
+(declare-var sqrt (-> Real Real))
+(declare-var pow (-> Real Real Real))
+
+(constraint (= (sqrt x) (pow x 0.5)))
+(constraint (= (pow x 2.0) (* x x)))
+
+(synth-fun sem_online ((prev_out Real) (prev_s Real) (prev_m2 Real) (prev_len Int) (__x Real) (sqrt (-> Real Real)) (pow (-> Real Real Real))) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     prev_s
+     prev_m2
+     (to_real prev_len)
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)
+     (sqrt R)
+     (pow R R)
+     (pow R (+ R R))))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun-rec variance ((xs List) (mean Real)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (pow (- hd mean) 2.0) (variance tl mean))))))
+
+(define-fun-rec sem ((xs List) (sqrt (-> Real Real))) Real
+  (/ (sqrt (/ (variance xs (/ (sum xs) (len xs))) (len xs)))
+     (sqrt (to_real (len xs)))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+    (= (sem xs sqrt)
+       (sem_online (sem (tl xs) sqrt) (sum (tl xs)) (variance (tl xs) (/ (sum (tl xs)) (len (tl xs)))) (len (tl xs)) x sqrt pow))))
+
+(check-synth)

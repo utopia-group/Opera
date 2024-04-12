@@ -1,0 +1,82 @@
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+int mode(int len, int[len] in) {
+    int[len] counts;
+    int[len] values;
+    int counts_len = 0;
+    int valueWithMaxCount = 0;
+    int maxCount = 0;
+
+    for (int i = 0; i < len; i++) {
+        int found_index = -1;
+        for (int j = 0; j < counts_len; j++) {
+            if (values[j] == in[i]) {
+                found_index = j;
+                break;
+            }
+        }
+
+        if (found_index == -1) {
+            values[counts_len] = in[i];
+            counts[counts_len] = 1;
+            if (1 > maxCount){
+                maxCount = 1;
+                valueWithMaxCount = in[i];
+            }
+            counts_len++;
+        } else {
+            counts[found_index]++;
+            if (counts[found_index] > maxCount) {
+                maxCount = counts[found_index];
+                valueWithMaxCount = in[i];
+            }
+        }
+    }
+
+    return valueWithMaxCount;
+}
+
+int mode_online(int valueWithMaxCount, int maxCount, int counts_len, 
+                int counts[3], int values[3], int x) {
+    if (??) { return x; }
+    else { return valueWithMaxCount; }
+}
+
+harness void main(int[3] in) {
+    int len = 3;
+    int counts[len]; 
+    int values[len]; 
+    int counts_len = 0; 
+    int valueWithMaxCount = 0;
+    int maxCount = 0; 
+
+    for (int i = 0; i < len - 1; i++) {
+        int found_index = -1;
+        for (int j = 0; j < counts_len; j++) {
+            if (values[j] == in[i]) {
+                found_index = j;
+                break;
+            }
+        }
+
+        if (found_index == -1) {
+            values[counts_len] = in[i];
+            counts[counts_len] = 1;
+            if (1 > maxCount){
+                maxCount = 1;
+                valueWithMaxCount = in[i];
+            }
+            counts_len++;
+        } else {
+            counts[found_index]++;
+            if (counts[found_index] > maxCount) {
+                maxCount = counts[found_index];
+                valueWithMaxCount = in[i];
+            }
+        }
+    }
+    int prev_out = valueWithMaxCount;
+    int new_out = mode(len, in);
+    assert new_out == mode_online(prev_out, maxCount, counts_len, counts, values, in[len - 1]);
+}

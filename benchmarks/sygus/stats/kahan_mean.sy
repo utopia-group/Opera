@@ -1,0 +1,64 @@
+(set-logic UFDTNIRA)
+
+(synth-fun kahan_mean_online ((prev_len Int) (prev_n Real) (prev_y Real) (prev_t Real) (prev_c Real) (prev_mu Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     (to_real prev_len)
+     prev_n
+     prev_y
+     prev_t
+     prev_c
+     prev_mu
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(declare-datatype InfoTuple
+  ((info (mu Real) (c Real) (n Real) (y Real) (t Real))))
+
+(define-fun comp_tuple ((it InfoTuple) (x Real)) InfoTuple
+  (match it
+    (((info mu c n old_y old_t)
+        (let ((new_n (+ n 1)))
+          (let ((y (- (/ (- x mu) new_n) c)))
+            (let ((t (+ mu y)))
+              (let ((new_c (- (- t mu) y))
+                    (new_mu t))
+                (info new_mu new_c new_n y t)))))))))
+
+(define-fun-rec kahan_mean_helper ((xs List)) InfoTuple
+  (match xs
+    ((nil (info 0.0 0.0 0.0 0.0 0.0))
+     ((cons hd tl) (comp_tuple (kahan_mean_helper tl) hd)))))
+
+(define-fun kahan_mean ((xs List)) Real
+  (let ((res (kahan_mean_helper xs)))
+    (match res
+      (((info mu c n y t) mu)))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var x Real)
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 (cons xs2 nil))))))
+    (let ((prev_kahan_mean (kahan_mean_helper (tl xs))))
+      (match prev_kahan_mean
+        (((info prev_mu prev_c prev_n prev_y prev_t)
+          (= (kahan_mean xs)
+             (kahan_mean_online (len (tl xs)) prev_n prev_y prev_t prev_c prev_mu (hd xs)))))))))
+
+(check-synth)

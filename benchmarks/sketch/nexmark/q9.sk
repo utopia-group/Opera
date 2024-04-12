@@ -1,0 +1,146 @@
+pragma options "--bnd-unroll-amnt 8";
+
+struct Bid {
+  int auction;
+  int bidder;
+  int dateTime;
+  int price;
+  int extra;
+}
+
+struct Auction {
+  int id;
+  int seller;
+  int category;
+  int expires;
+  int dateTime;
+  int itemName;
+  int description;
+  int initialBid;
+  int reserve;
+  int extra;
+}
+
+adt Dict<K,V>{
+    Item{ K key; V value; Dict<K,V> next; }
+    Empty{}
+}
+
+Dict<K,V> emptyDict<K,V>() {
+    return new Empty<K,V>();
+}
+
+V getValue<K, V>(Dict<K, V> d, K key) {
+    if (d is Item) {
+        if (key == d.key) {
+            return d.value;
+        } else {
+            return getValue(d.next, key);
+        }
+    } else if (d is Empty) {
+        assert false;
+    }
+}
+
+bool containsKey<K, V>(Dict<K, V> d, K key) {
+    if (d is Item) {
+        if (key == d.key) {
+            return true;
+        } else {
+            return containsKey(d.next, key);
+        }
+    } else if (d is Empty) {
+        return false;
+    }
+}
+
+Dict<K,V> addOrUpdate<K,V>(Dict<K,V> dict, K key, V value) {
+    if (dict is Empty) {
+        return new Item<K,V>(key=key, value=value, next=dict);
+    } else if (dict is Item) {
+        if (dict.key == key) {
+            return new Item<K,V>(key=key, value=value, next=dict.next);
+        } else {
+            return new Item<K,V>(key=dict.key, value=dict.value, next=addOrUpdate(dict.next, key, value));
+        }
+    }
+}
+
+Dict<int, Bid> query(int len1, int len2, Auction[len1] in1, Bid[len2] in2) {
+    Dict<int, Bid> res = emptyDict();
+    for (int i = 0; i < len1; i++) {
+        Auction a = in1[i];
+        for(int j = 0; j < len2; j++) {
+            Bid b = in2[j];
+            if (a.id == b.auction) {
+                if(containsKey(res, b.auction)) {
+                    if(getValue(res, b.auction).price < b.price){
+                        res = addOrUpdate(res, a.id, b);
+                    }
+                } else {
+                    res = addOrUpdate(res, a.id, b);
+                }
+            }
+        }
+    }
+    return res;
+}
+
+Dict<int, Bid> query_online(Dict<int, Bid> prev_out, Bid[len2] in, Auction x) {
+  
+  // Your implementation here
+  int len2 = in.length;
+  for(int j = 0; j < len2; j++) {
+      Bid b = in[j];
+      if (x.id == b.auction) {
+          if(containsKey(prev_out, b.auction)) {
+              if(getValue(prev_out, b.auction).price < b.price){
+                  prev_out = addOrUpdate(prev_out, x.id, b);
+              }
+          } else {
+              prev_out = addOrUpdate(prev_out, x.id, b);
+          }
+      }
+  }
+  return prev_out;
+
+}
+
+harness void main(
+  int auction_1,
+  int bidder_1,
+  int dateTime_1,
+  int price_1,
+  int extra_1,
+  int auction_2,
+  int bidder_2,
+  int dateTime_2,
+  int price_2,
+  int extra_2,
+  int auction_3,
+  int bidder_3,
+  int dateTime_3,
+  int price_3,
+  int extra_3
+) {
+
+  Bid bid_1 = new Bid(auction=auction_1, bidder=bidder_1, dateTime=dateTime_1, price=price_1, extra=extra_1);
+  Bid bid_2 = new Bid(auction=auction_2, bidder=bidder_2, dateTime=dateTime_2, price=price_2, extra=extra_2);
+  Bid bid_3 = new Bid(auction=auction_3, bidder=bidder_3, dateTime=dateTime_3, price=price_3, extra=extra_3);
+  Bid[3] in2 = {bid_1, bid_2, bid_3};
+
+  Auction auction_1 = new Auction(id=1, seller=1, category=1, dateTime=1, expires=1, itemName=1, description=1, initialBid=1, reserve=1, extra=1 );
+  Auction auction_2 = new Auction(id=2, seller=2, category=2, dateTime=2, expires=2, itemName=2, description=2, initialBid=2, reserve=2, extra=2 );
+  Auction auction_3 = new Auction(id=3, seller=3, category=3, dateTime=3, expires=3, itemName=3, description=3, initialBid=3, reserve=3, extra=3 );
+
+  Auction[3] in1 = {auction_1, auction_2, auction_3};
+
+  int len1 = 3;
+  int len2 = 3;
+  int prev_len = len1 - 1;
+
+  Dict<int, Bid> prev_out = query(prev_len, len2, in1[0::prev_len], in2);
+  Dict<int, Bid> new_out  = query(len1, len2, in1, in2);
+
+  assert new_out == query_online(prev_out, in2, in1[len1-1]);
+}

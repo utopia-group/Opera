@@ -1,0 +1,17 @@
+{
+  "solution": "\\prev_out prev_x_sum prev_y_sum prev_cov prev_len x__ -> (let S = {} in let S = S{x_sum = 0; y_sum = 0} in let S = S{x_sum = prev_x_sum + x__1; y_sum = prev_y_sum + x__2} in let S = S{x_mean = (x_sum / (prev_len + 1)); y_mean = (y_sum / (prev_len + 1)); cov = 0} in let S = S{cov = ((prev_len**2*x__1*x__2 - prev_len*prev_x_sum*x__2 - prev_len*prev_y_sum*x__1 + prev_out*(prev_len**3 - prev_len) + prev_x_sum*prev_y_sum)/(prev_len**2 + prev_len))} in (S[cov] / ((prev_len + 1) - 1)), (prev_x_sum + x__1, prev_y_sum + x__2, ((prev_len**2*x__1*x__2 - prev_len*prev_x_sum*x__2 - prev_len*prev_y_sum*x__1 + prev_out*(prev_len**3 - prev_len) + prev_x_sum*prev_y_sum)/(prev_len**2 + prev_len)), (prev_len + 1)))",
+  "qe_time": 3.1166107654571533,
+  "syn_time": 77.49823522567749,
+  "parse_time": 0.0023360252380371094,
+  "test_time": 0.6302971839904785,
+  "total_time": 81.24748635292053,
+  "num_exprs_to_synthesize": 4,
+  "exprs_sizes": [
+    35,
+    2,
+    3,
+    3
+  ],
+  "offline_ast_size": 35,
+  "online_ast_size": 65
+}

@@ -1,0 +1,70 @@
+(set-logic UFDTNIRA)
+
+(synth-fun kahan_variance_online 
+   ((prev_len Int) (prev_n Real) (prev_mu Real) (prev_cmu Real) (prev_sigma_sq Real) (prev_csigma_sq Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     (to_real prev_len)
+     prev_n
+     prev_mu
+     prev_cmu
+     prev_sigma_sq
+     prev_csigma_sq
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(declare-datatype InfoTuple
+  ((info (n Real) (mu Real) (cmu Real) (sigma_sq Real) (csigma_sq Real))))
+
+(define-fun comp_tuple ((it InfoTuple) (x Real)) InfoTuple
+  (match it
+    (((info n mu cmu sigma_sq csigma_sq)
+        (let ((new_n (+ n 1)))
+          (let ((prev_mu mu)
+                (y1 (- (/ (- x mu) new_n) cmu)))
+                (let ((t1 (+ mu y1))) 
+                (let ((y2 (- (* (- x prev_mu) (- x t1)) csigma_sq)))
+                (let ((t2 (+ sigma_sq y2)))
+            (let ((new_cmu (- (- t1 mu) y1))
+                  (new_mu t1)
+                  (new_csigma_sq (- (- t2 sigma_sq) y2))
+                  (new_sigma_sq t2))
+              (info new_n new_mu new_cmu new_sigma_sq new_csigma_sq)))))))))))
+
+(define-fun-rec kahan_variance_helper ((xs List)) InfoTuple
+  (match xs
+    ((nil (info 0.0 0.0 0.0 0.0 0.0))
+     ((cons hd tl) (comp_tuple (kahan_variance_helper tl) hd)))))
+
+(define-fun kahan_variance ((xs List)) Real
+  (let ((res (kahan_variance_helper xs)))
+    (match res
+      (((info n mu cmu sigma_sq csigma_sq) (/ sigma_sq n))))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var x Real)
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 (cons xs2 nil))))))
+    (let ((prev_kahan_variance (kahan_variance_helper (tl xs))))
+      (match prev_kahan_variance
+        (((info prev_n prev_mu prev_cmu prev_sigma_sq prev_csigma_sq)
+          (= (kahan_variance xs)
+             (kahan_variance_online (len (tl xs)) prev_n prev_mu prev_cmu prev_sigma_sq prev_csigma_sq (hd xs)))))))))
+
+(check-synth)

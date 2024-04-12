@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_new_bid prev_x x__ -> (let S = {} in let S = let S = S{new_bid = prev_new_bid; x = prev_x} in S{new_bid = if python(x['channel'].lower() in channel_ids) then python([*new_bid, x]) else if python(re.search('(&|^)channel_id=([^&]*)', x['url'])) then python([*new_bid, x]) else new_bid; x = if python(x['channel'].lower() in channel_ids) then python({**x, 'channel_id': channel_ids[x['channel'].lower()]}) else if python(re.search('(&|^)channel_id=([^&]*)', x['url'])) then python({**x, 'channel_id': re.search('(&|^)channel_id=([^&]*)', x['url']).group(2)}) else x} in S[new_bid], (S[new_bid], S[x]))",
+  "qe_time": 0.0003609657287597656,
+  "syn_time": 0.005263090133666992,
+  "parse_time": 0.0219881534576416,
+  "test_time": 7.960623025894165,
+  "total_time": 7.988303184509277,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    59,
+    0
+  ],
+  "offline_ast_size": 60,
+  "online_ast_size": 58
+}

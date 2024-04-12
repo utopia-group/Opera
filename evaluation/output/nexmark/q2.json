@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_new_bid x__ -> (let S = {} in let S = let S = S{new_bid = prev_new_bid} in S{new_bid = if (python(x['auction']) > 3) then python([*new_bid, x]) else new_bid} in S[new_bid], (S[new_bid]))",
+  "qe_time": 0.0003771781921386719,
+  "syn_time": 0.0016331672668457031,
+  "parse_time": 0.0026290416717529297,
+  "test_time": 1.3380529880523682,
+  "total_time": 1.3427014350891113,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    14
+  ],
+  "offline_ast_size": 15,
+  "online_ast_size": 15
+}

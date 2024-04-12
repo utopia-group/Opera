@@ -1,0 +1,106 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (bidder Int)
+                          (dateTime Int)
+                          (price Int)
+                          (extra Int)
+)))
+
+(declare-datatype Report ((report
+                          (number_of_bids Int)
+                          (bids_less_than_10000 Int)
+                          (bids_from_10000_to_1000000 Int)
+                          (bids_greater_than_1000000 Int)
+                          (minimum_price Int)
+                          (maximum_price Int)
+                          (total_price Int)
+                          (average_price Int)
+)))
+
+(declare-datatype ReportList
+  ((nil)
+   (cons (head Report) (tail ReportList))))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(define-fun add ((xs ReportList) (x Report)) ReportList
+  (cons x xs))
+
+(define-fun min ((x Int) (y Int)) Int 
+  (ite (< x y) x y))
+
+(define-fun max ((x Int) (y Int)) Int 
+  (ite (> x y) x y))
+
+(define-fun update_report ((x Bid) (r Report)) Report
+  (report 
+    (+ (number_of_bids r) 1)
+    (+ (bids_less_than_10000 r) (ite (< (price x) 10000) 1 0))
+    (+ (bids_from_10000_to_1000000 r) (ite (and (>= (price x) 10000) (< (price x) 1000000)) 1 0))
+    (+ (bids_greater_than_1000000 r) (ite (>= (price x) 1000000) 1 0))
+    (min (minimum_price r) (price x))
+    (max (maximum_price r) (price x))
+    (+ (total_price r) (price x))
+    0
+  ))
+
+(define-fun-rec query ((xs BidList)) ReportList
+  (match xs
+    ((bnil nil)
+     ((bcons hd tl) (add (query tl) (update_report hd (report 0 0 0 0 0 0 0 0))))))
+)
+
+(synth-fun query_online ((prev_out ReportList) (__x Bid)) ReportList
+  ((L ReportList) (R Report) (B Bid) (I Int) (C Bool))
+  (
+    (L ReportList
+      (
+      prev_out
+      (add L R)))
+    (R Report
+    ((report 0 0 0 0 0 0 0 0) 
+      (update_report B R)))
+    (B Bid 
+      (__x (bid I I I I I)))
+    (I Int (
+      0
+      (auction __x)
+      (bidder __x)
+      (dateTime __x)
+      (price __x)
+      (extra __x)
+      (+ I I)
+      (- I I)
+      (min I I)
+      (max I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (not C)
+      (< I I)
+      (> I I)
+      (<= I I)
+      (>= I I)))
+    ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+
+(constraint
+  (
+    let (
+      (old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil))))
+      (new_xs (bcons x (bcons x (bcons xs0 (bcons xs1 (bcons xs2 bnil))))))
+    )
+    (= (query new_xs)
+       (query_online (query old_xs) x))
+))
+
+(check-synth)

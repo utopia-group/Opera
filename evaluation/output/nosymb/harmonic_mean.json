@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_s prev_len x__ -> (let S = {} in let S = S{s = 0} in let S = S{s = (prev_s + 1 / x__)} in ((1 + prev_len) / S[s]), ((prev_s + 1 / x__), (1 + prev_len)))",
+  "qe_time": 9.5367431640625e-07,
+  "syn_time": 0.20824599266052246,
+  "parse_time": 0.001026153564453125,
+  "test_time": 0.17859101295471191,
+  "total_time": 0.3878672122955322,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    2,
+    4
+  ],
+  "offline_ast_size": 12,
+  "online_ast_size": 15
+}

@@ -1,0 +1,111 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (bidder Int)
+                          (dateTime Int)
+                          (price Int)
+                          (extra Int)
+)))
+
+(declare-datatype SideInput ((sideinput
+                          (key Int)
+                          (value Int)
+)))
+
+(declare-datatype Person ((person
+                          (pid Int)
+                          (pstate Int)
+                          (pcity Int)
+)))
+
+(declare-datatype Auction ((auction
+                          (aseller Int)
+                          (acategory Int)
+                          (aid Int)
+)))
+
+(declare-datatype PersonList
+  ((pnil)
+   (pcons (phd Person) (ptl PersonList))))
+  
+(declare-datatype AuctionList
+  ((anil)
+   (acons (ahd Person) (atl AuctionList))))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(declare-datatype SideInputList
+  ((sinil)
+   (sicons (sihd SideInput) (sitl SideInputList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (bcons x xs))
+
+(define-fun match_auction ((b Bid) (s SideInput)) Bool
+  (= (auction b) (key s)))
+
+(define-fun append ((xs SideInputList) (x SideInput)) SideInputList
+  (sicons x xs))
+
+(define-fun-rec query ((xs BidList) (ys SideInputList)) SideInputList
+  (match xs
+    ((bnil ys)
+     ((bcons hd tl) 
+       (ite (match_auction hd (sihd ys)) 
+           (append (query tl (sitl ys)) (sideinput (auction hd) (value (sihd ys)))) 
+           (query tl (sitl ys)))))))
+
+(synth-fun query_online ((prev_out SideInputList) (side_inputs SideInputList) (__x Bid)) SideInputList
+  ((L SideInputList) (S SideInput) (B Bid) (I Int) (C Bool))
+  (
+    (L SideInputList
+      (
+      prev_out
+      (append L S)))
+    (S SideInput
+      ((sideinput I I)))
+    (B Bid 
+      (__x (bid I I I I I)))
+    (I Int (
+      3
+      (auction __x)
+      (bidder __x)
+      (dateTime __x)
+      (price __x)
+      (extra __x)
+      (+ I I)
+      (- I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (not C)
+      (= I I)
+      (> I I)
+      (<= I I)
+      (>= I I)))
+    ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+(declare-var si0 SideInput)
+(declare-var si1 SideInput)
+(declare-var si2 SideInput)
+
+(constraint
+  (
+    let (
+      (old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil))))
+      (new_xs (add (bcons x (bcons xs0 (bcons xs1 (bcons xs2 bnil)))) x))
+      (old_si (sicons si0 (sicons si1 (sicons si2 sinil))))
+    )
+    (= (query new_xs old_si)
+       (query_online (query old_xs old_si) old_si x))
+  ))
+
+(check-synth)

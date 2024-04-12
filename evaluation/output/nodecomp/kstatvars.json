@@ -1,0 +1,17 @@
+{
+  "solution": "\\prev_out prev_s1 prev_s2 prev_len x__ -> (((prev_len*x__**2 - prev_s1**2 - 2*prev_s1*x__ + prev_s2*(prev_len + 1))/(prev_len**3 + 2*prev_len**2 + prev_len)), (prev_s1 + x__, prev_s2 + x__**2.0, (prev_len + 1)))",
+  "qe_time": 0.9923989772796631,
+  "syn_time": 39.59963607788086,
+  "parse_time": 0.002218008041381836,
+  "test_time": 0.4644749164581299,
+  "total_time": 41.05873394012451,
+  "num_exprs_to_synthesize": 4,
+  "exprs_sizes": [
+    29,
+    2,
+    3,
+    4
+  ],
+  "offline_ast_size": 24,
+  "online_ast_size": 42
+}

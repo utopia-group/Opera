@@ -1,0 +1,83 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (seller Int)
+                          (category Int)
+                          (id Int))))
+
+(declare-datatype Person ((person
+                          (pid Int)
+                          (pstate Int)
+                          (pcity Int))))
+
+(declare-datatype PersonList
+  ((pnil)
+   (pcons (phd Person) (ptl PersonList))))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (bcons x xs))
+
+(define-fun-rec lookup_person ((personList PersonList) (x Bid)) Person
+  (match personList
+    ((pnil (person 0 0 0))
+     ((pcons hd tl) (ite (= (pid hd) (seller x)) hd (lookup_person tl x))))))
+
+(define-fun check_condition ((p Person) (x Bid)) Bool
+  (and (= (category x) 2) (not (= (pstate p) 2))))
+  
+(define-fun-rec query ((bidList BidList) (personList PersonList)) BidList
+  (match bidList
+    ((bnil bnil)
+     ((bcons hd tl) (let ((p (lookup_person personList hd)))
+                      (ite (check_condition p hd) (add (query tl personList) hd) (query tl personList)))))))
+
+(synth-fun query_online ((prev_out BidList) (personList PersonList) (__x Bid)) BidList
+  ((L BidList) (P Person) (B Bid) (I Int) (C Bool))
+  (
+    (L BidList
+      (prev_out
+      (add L B)))
+    (P Person
+      ((lookup_person personList __x)))
+    (B Bid 
+      (__x (bid I I I I)))
+    (I Int (
+      2
+      (auction __x)
+      (seller __x)
+      (category __x)
+      (id __x)
+      (pid P)
+      (pstate P)
+      (pcity P)
+      (+ I I)
+      (- I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (not C)
+      (<= I I)
+      (>= I I)
+      (> I I)
+      (= I I)))
+  ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+(declare-var personList PersonList)
+
+(constraint
+    (let ((old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil)))))
+      (= (query (bcons x old_xs) personList)
+         (query_online (query old_xs personList) personList x)))
+  )
+
+(check-synth)

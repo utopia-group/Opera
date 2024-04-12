@@ -1,0 +1,77 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Convert Current File (default)",
+            "type": "python",
+            "request": "launch",
+            "module": "b2s.cli",
+            "args": [
+                "--num_workers=4",
+                "${file}"
+            ],
+            "pythonArgs": [
+                "-Xfrozen_modules=off"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            }
+        },
+        {
+            "name": "Convert Current File (NoSymbolic)",
+            "type": "python",
+            "request": "launch",
+            "module": "b2s.cli",
+            "args": [
+                "--num_workers=4",
+                "--syn_ablation=nosymbolic",
+                "${file}"
+            ],
+            "pythonArgs": [
+                "-Xfrozen_modules=off"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            }
+        },
+        {
+            "name": "Convert Current File (NoDecomp)",
+            "type": "python",
+            "request": "launch",
+            "module": "b2s.cli",
+            "args": [
+                "--num_workers=4",
+                "--syn_ablation=nodecomp",
+                "${file}"
+            ],
+            "pythonArgs": [
+                "-Xfrozen_modules=off"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            }
+        },
+        {
+            "name": "Convert Current File (GPT-4)",
+            "type": "python",
+            "request": "launch",
+            "module": "b2s.cli",
+            "args": [
+                "--converter=gpt",
+                "--gpt_model=gpt-4",
+                "${file}"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true,
+        }
+    ]
+}

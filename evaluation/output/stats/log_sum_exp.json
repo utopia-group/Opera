@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_alpha prev_s x__ -> (let S = {} in let S = S{alpha = 1.0} in let S = S{alpha = x__ if (prev_alpha - x__ < 0.0) else prev_out - log(prev_s)} in let S = S{s = 0.0} in let S = S{s = prev_s*exp(prev_alpha - x__) + 1 if (prev_alpha - x__ < 0.0) else prev_s + exp(-prev_alpha + x__)} in (S[alpha] + log(S[s])), (x__ if (prev_alpha - x__ < 0.0) else prev_out - log(prev_s), prev_s*exp(prev_alpha - x__) + 1 if (prev_alpha - x__ < 0.0) else prev_s + exp(-prev_alpha + x__)))",
+  "qe_time": 11.53065800666809,
+  "syn_time": 1.2787420749664307,
+  "parse_time": 0.0015711784362792969,
+  "test_time": 0.43468427658081055,
+  "total_time": 13.245662212371826,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    10,
+    20
+  ],
+  "offline_ast_size": 22,
+  "online_ast_size": 44
+}

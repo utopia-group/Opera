@@ -1,0 +1,4 @@
+(
+(define-fun query_online ((prev_out BidList) (__x Bid)) BidList (add prev_out __x))
+)
+time=0

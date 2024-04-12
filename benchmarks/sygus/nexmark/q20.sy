@@ -1,0 +1,118 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (bidder Int)
+                          (price Int)
+                          (channel Int)
+                          (url Int)
+                          (bid_dateTime Int)
+                          (bid_extra Int)
+)))
+
+(declare-datatype Auction ((auction
+                          (itemName Int)
+                          (description Int)
+                          (initialBid Int)
+                          (reserve Int)
+                          (auction_dateTime Int)
+                          (expires Int)
+                          (seller Int)
+                          (category Int)
+                          (auction_extra Int)
+)))
+
+(declare-datatype Person ((person
+                          (pid Int)
+                          (pstate Int)
+                          (pcity Int)
+)))
+
+(declare-datatype PersonList
+  ((pnil)
+   (pcons (phd Person) (ptl PersonList))))
+
+(declare-datatype AuctionList
+  ((anil)
+   (acons (ahd Auction) (atl AuctionList))))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (bcons x xs))
+
+(define-fun check_category ((x Auction)) Bool
+  (> (category x) 2))
+
+(define-fun match_auction ((x Bid) (y Auction)) Bool
+  (= (auction x) (itemName y)))
+
+(define-fun-rec query ((xs BidList) (auctionList AuctionList)) BidList
+  (match xs
+    ((bnil bnil)
+     ((bcons hd tl) 
+      (ite (and (check_category (ahd auctionList)) 
+                (match_auction hd (ahd auctionList)))
+           (add (query tl auctionList) hd) 
+           (query tl auctionList))))))
+
+(synth-fun query_online ((prev_out BidList) (auctionList AuctionList) (__x Bid)) BidList
+  ((L BidList) (B Bid) (A Auction) (I Int) (C Bool))
+  (
+    (L BidList
+      (prev_out
+      (add L B)))
+    (B Bid 
+      (__x (bid I I I I I I I)))
+    (A Auction
+      ((auction I I I I I I I I I)))
+    (I Int (
+      3
+      (auction __x)
+      (bidder __x)
+      (price __x)
+      (channel __x)
+      (url __x)
+      (bid_dateTime __x)
+      (bid_extra __x)
+      (itemName A)
+      (description A)
+      (initialBid A)
+      (reserve A)
+      (auction_dateTime A)
+      (expires A)
+      (seller A)
+      (category A)
+      (auction_extra A)
+      (+ I I)
+      (- I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (not C)
+      (<= I I)
+      (>= I I)
+      (> I I)
+      (= I I)))
+    ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+(declare-var y Auction)
+
+(constraint
+  (
+    let (
+      (old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil))))
+      (new_xs (add (bcons x (bcons xs0 (bcons xs1 (bcons xs2 bnil)))) x))
+    )
+    (= (query new_xs (acons y anil))
+       (query_online (query old_xs (acons y anil)) (acons y anil) x))
+  ))
+
+(check-synth)

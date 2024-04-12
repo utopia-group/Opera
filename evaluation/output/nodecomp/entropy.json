@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_s prev_ent_s x__ -> ((prev_ent_s*prev_s - prev_s*log(prev_s) + prev_s*log(prev_s + x__) - x__*log(x__) + x__*log(prev_s + x__))/(prev_s + x__), (prev_s + x__, (prev_ent_s*prev_s - prev_s*log(prev_s) + prev_s*log(prev_s + x__) - x__*log(x__) + x__*log(prev_s + x__))/(prev_s + x__)))",
+  "qe_time": 2.912544012069702,
+  "syn_time": 0.01149892807006836,
+  "parse_time": 0.0019478797912597656,
+  "test_time": 0.41614580154418945,
+  "total_time": 3.3421599864959717,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    33,
+    33,
+    3
+  ],
+  "offline_ast_size": 21,
+  "online_ast_size": 72
+}

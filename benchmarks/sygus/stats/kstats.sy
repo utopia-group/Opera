@@ -1,0 +1,71 @@
+(set-logic UFDTNIRA)
+
+(define-fun-rec exp ((base Real) (exponent Int)) Real
+  (ite (< exponent 1)
+    1.0
+    (* base (exp base (- exponent 1)))))
+
+(synth-fun kstat_3_online ((prev_out Real) (prev_s1 Real) (prev_s2 Real) (prev_s3 Real) (prev_len Int) (__x Real)) Real
+  ((R Real) (I Int))
+  ((R Real
+    (1.0
+     prev_out
+     prev_s1
+     prev_s2
+     prev_s3
+     __x
+     (exp R I)
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))
+   (I Int
+    (1
+     prev_len
+     (+ I I)
+     (- I I)
+     (* I I)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec sum ((xs List) (pow Int)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (exp hd pow) (sum tl pow))))))
+
+(define-fun-rec len_3 ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len_3 tl))))))
+
+(define-fun-rec kstat_3_offline ((xs List)) Real
+  (let ((ls (to_real (len_3 xs))))
+    (let ((s1 (sum xs 1))
+          (s2 (sum xs 2))
+          (s3 (sum xs 3)))
+      (/ (- (* 2.0 (exp s1 3)) (* 3.0 ls s1 s2) (* (exp ls 2) s3)) 
+         (* ls (/ (* ls (- ls 1)) (- ls 2)))))))
+
+(declare-var x Real)
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+
+(constraint
+  (let ((old_len 3)
+        (new_len 4)
+        (old_s1 (+ xs0 xs1 xs2))
+        (old_s2 (+ (exp xs0 2) (exp xs1 2) (exp xs2 2)))
+        (old_s3 (+ (exp xs0 3) (exp xs1 3) (exp xs2 3))))
+    (let ((old_out (/ (- (* 2.0 (exp old_s1 3)) (* 3.0 old_len old_s1 old_s2) (* (exp (to_real old_len) 2) old_s3)) 
+                      (* old_len (/ (* old_len (- old_len 1)) (- old_len 2)))))
+          (new_out (/ (- (* 2.0 (exp (+ old_s1 x) 3)) (* 3.0 new_len (+ old_s1 x) (+ old_s2 (exp x 2))) 
+                       (* (exp (to_real new_len) 2) (+ old_s3 (exp x 3)))) 
+                      (* new_len (/ (* new_len (- new_len 1)) (- new_len 2)))))
+                      )
+                            (= new_out
+         (kstat_3_online old_out old_s1 old_s2 old_s3 old_len x)))))
+
+(check-synth)

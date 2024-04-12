@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_key prev_tmp x__ -> (let S = {} in let S = let S = S{key = prev_key; tmp = prev_tmp} in S{key = (python(row['bidder']), python(row['auction'])); tmp = if python(key not in tmp) then python({**tmp, key: row}) else tmp} in python(list(tmp.values())), (S[key], S[tmp]))",
+  "qe_time": 0.0003287792205810547,
+  "syn_time": 0.002815723419189453,
+  "parse_time": 0.004663944244384766,
+  "test_time": 6.572403907775879,
+  "total_time": 6.580223798751831,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    16,
+    0
+  ],
+  "offline_ast_size": 20,
+  "online_ast_size": 23
+}

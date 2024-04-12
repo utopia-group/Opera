@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_url_parts prev_new_bid x__ -> (let S = {} in let S = let S = S{url_parts = prev_url_parts; new_bid = prev_out} in S{url_parts = python(x['url'].split('/')); new_bid = python([*new_bid, {**x, 'dir1': url_parts[3] if len(url_parts) > 3 else None, 'dir2': url_parts[4] if len(url_parts) > 4 else None, 'dir3': url_parts[5] if len(url_parts) > 5 else None}])} in S[new_bid], (S[url_parts], S[new_bid]))",
+  "qe_time": 0.0003218650817871094,
+  "syn_time": 0.00795125961303711,
+  "parse_time": 0.003056764602661133,
+  "test_time": 6.195249080657959,
+  "total_time": 6.206586837768555,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    38,
+    0
+  ],
+  "offline_ast_size": 39,
+  "online_ast_size": 41
+}

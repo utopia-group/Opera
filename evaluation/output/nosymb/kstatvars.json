@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_s1 prev_s2 prev_len x__ -> (let S = {} in let S = S{s1 = 0.0; s2 = 0.0} in let S = S{s1 = (prev_s1 + x__); s2 = (prev_s2 + ((x__) ** (2)))} in (((((prev_len + 1) * S[s2]) - (S[s1] ^ 2)) / ((prev_len + 1) * ((prev_len + 1) - 1))) / (prev_len + 1)), ((prev_s1 + x__), (prev_s2 + ((x__) ** (2))), (prev_len + 1)))",
+  "qe_time": 1.9073486328125e-06,
+  "syn_time": 3.522873878479004,
+  "parse_time": 0.002758026123046875,
+  "test_time": 0.3441770076751709,
+  "total_time": 3.8698208332061768,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    2,
+    3,
+    4
+  ],
+  "offline_ast_size": 24,
+  "online_ast_size": 27
+}

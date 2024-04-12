@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_s prev_sq_s prev_len x__ -> (let S = {} in let S = S{s = 0} in let S = S{s = prev_s + x__} in let S = S{avg = (s / (prev_len + 1)); sq_s = 0} in let S = S{sq_s = ((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_len**2 + prev_len))/(prev_len**2 + prev_len))} in (S[sq_s] / (prev_len + 1)), (prev_s + x__, ((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)), (prev_len + 1)))",
+  "qe_time": 2.0894808769226074,
+  "syn_time": 36.15528607368469,
+  "parse_time": 0.0029671192169189453,
+  "test_time": 0.3373110294342041,
+  "total_time": 38.585052251815796,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    2,
+    3,
+    30
+  ],
+  "offline_ast_size": 23,
+  "online_ast_size": 51
+}

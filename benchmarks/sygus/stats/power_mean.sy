@@ -1,0 +1,63 @@
+(set-logic HO_UFDTNIRA)
+
+(declare-var power (-> Real Real Real))
+
+(declare-var x Real)
+(declare-var y Real)
+(declare-var z Real)
+
+(constraint (= (power x 0.0) 1.0))
+(constraint (= (power x 1.0) x))
+(constraint (= (power x (+ y z)) (* (power x y) (power x z))))
+(constraint (= (power x (- y z)) (/ (power x y) (power x z))))
+(constraint (= (power x (* y z)) (power (power x y) z)))
+(constraint (= (power x (/ y z)) (power (power x y) (/ 1 z))))
+(constraint (= (power x (power y z)) (power (power x y) z)))
+
+(synth-fun pmean_online ((prev_out Real) (prev_len Int) (prev_s Real) (__x Real) (p Int) (power (-> Real Real Real))) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     (to_real p)
+     prev_s
+     __x
+     (power R R)
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List) (p Int) (power (-> Real Real Real))) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (power hd (to_real p)) (sum tl p power))))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var p Int)
+
+(declare-var n Int)
+
+(constraint
+  (let ((old_len 3)
+        (new_len 4)
+        (old_mean (power (/ (+ (power xs0 (to_real p)) (power xs1 (to_real p)) (power xs2 (to_real p))) 3) (/ 1.0 (to_real p))))
+        (old_sum (+ (power xs0 (to_real p)) (power xs1 (to_real p)) (power xs2 (to_real p))))
+        (new_sum (+ (power xs0 (to_real p)) (power xs1 (to_real p)) (power xs2 (to_real p)) (power x (to_real p))))
+        (new_mean (power (/ (+ (power xs0 (to_real p)) (power xs1 (to_real p)) (power xs2 (to_real p)) (power x (to_real p))) 4) (/ 1.0 (to_real p)))))
+    (= new_mean
+       (pmean_online old_mean old_len old_sum x p power))))
+
+(check-synth)

@@ -1,0 +1,65 @@
+(set-logic UFDTNIRA)
+
+(synth-fun covariance_online ((prev_len Int) (prev_x_mean Real) (prev_y_mean Real) (prev_cov Real) (__x Real) (__y Real)) Real
+  ((R Real))
+  ((R Real
+    ((to_real prev_len)
+     prev_x_mean
+     prev_y_mean
+     prev_cov
+     __x
+     __y
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun mean ((xs List)) Real
+  (/ (sum xs) (len xs)))
+
+; assumes lists are the same length
+(define-fun-rec pair_sum ((xs List) (ys List) (x_mean Real) (y_mean Real)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd_x tl_x) 
+        (let ((hd_y (hd ys))
+              (tl_y (tl ys)))
+          (+ (* (- hd_x x_mean) (- hd_y y_mean)) (pair_sum tl_x tl_y x_mean y_mean)))))))
+    
+(define-fun covariance ((xs List) (ys List)) Real
+  (/ (pair_sum xs ys (mean xs) (mean ys)) 
+     (- (len xs) 1)))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var x Real)
+
+(declare-var ys0 Real)
+(declare-var ys1 Real)
+(declare-var ys2 Real)
+(declare-var y Real)
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil))))
+        (ys (cons y (cons ys0 (cons ys1 nil)))))
+    (let ((tl_x (tl xs))
+          (tl_y (tl ys)))
+      (= (covariance xs ys)
+         (covariance_online (len tl_x) (mean tl_x) (mean tl_y) (covariance tl_x tl_y) (hd xs) (hd ys))))))
+
+(check-synth)

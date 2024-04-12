@@ -1,0 +1,18 @@
+{
+  "solution": "\\prev_out prev_x_sum prev_y_sum prev_num prev_den prev_len x__ -> (let S = {} in let S = S{x_sum = 0.0; y_sum = 0.0} in let S = S{x_sum = prev_x_sum + x__1; y_sum = prev_y_sum + x__2} in let S = S{x_mean = (x_sum / (prev_len + 1)); y_mean = (y_sum / (prev_len + 1)); num = 0.0; den = 0.0} in let S = S{num = ((prev_len**2*x__1*x__2 - prev_len*prev_x_sum*x__2 - prev_len*prev_y_sum*x__1 + prev_num*(prev_len**2 + prev_len) + prev_x_sum*prev_y_sum)/(prev_len**2 + prev_len)); den = ((prev_den*(prev_len**2 + prev_len) + prev_len**2*x__1**2 - 2*prev_len*prev_x_sum*x__1 + prev_x_sum**2)/(prev_len**2 + prev_len))} in let S = S{slope = (num / den); intercept = (y_mean - (slope * x_mean))} in S[slope], (prev_x_sum + x__1, prev_y_sum + x__2, ((prev_len**2*x__1*x__2 - prev_len*prev_x_sum*x__2 - prev_len*prev_y_sum*x__1 + prev_num*(prev_len**2 + prev_len) + prev_x_sum*prev_y_sum)/(prev_len**2 + prev_len)), ((prev_den*(prev_len**2 + prev_len) + prev_len**2*x__1**2 - 2*prev_len*prev_x_sum*x__1 + prev_x_sum**2)/(prev_len**2 + prev_len)), (prev_len + 1)))",
+  "qe_time": 3.7155182361602783,
+  "syn_time": 162.62315320968628,
+  "parse_time": 0.002730131149291992,
+  "test_time": 0.8596551418304443,
+  "total_time": 167.2010622024536,
+  "num_exprs_to_synthesize": 5,
+  "exprs_sizes": [
+    30,
+    2,
+    35,
+    3,
+    3
+  ],
+  "offline_ast_size": 44,
+  "online_ast_size": 102
+}

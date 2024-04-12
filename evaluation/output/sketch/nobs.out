@@ -1,0 +1,82 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/stats/nobs.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+/*nobs.sk:33*/
+
+void _main (int len, double[len] in)/*nobs.sk:33*/
+{
+  assume (len > 2): "Assume at nobs.sk:34"; //Assume at nobs.sk:34
+  assume (len < 6): "Assume at nobs.sk:35"; //Assume at nobs.sk:35
+  int prev_out_s3 = 0;
+  nobs(len - 1, in[0::len - 1], prev_out_s3);
+  int new_out_s5 = 0;
+  nobs(len, in, new_out_s5);
+  int _out_s7 = 0;
+  nobs_online(prev_out_s3, in[len - 1], _out_s7);
+  assert (new_out_s5 == _out_s7); //Assert at nobs.sk:41 (0)
+}
+/*nobs.sk:33*/
+
+void main__Wrapper (int len, double[len] in)  implements main__WrapperNospec/*nobs.sk:33*/
+{
+  _main(len, in);
+}
+/*nobs.sk:33*/
+
+void main__WrapperNospec (int len, double[len] in)/*nobs.sk:33*/
+{ }
+/*nobs.sk:15*/
+
+void nobs (int len, double[len] in, ref int _out)/*nobs.sk:15*/
+{
+  _out = 0;
+  for(int i = 0; i < len; i = i + 1)/*Canonical*/
+  {
+    _out = _out + 1;
+  }
+  return;
+}
+/*nobs.sk:23*/
+
+void nobs_online (int prev_out, double x, ref int _out)/*nobs.sk:23*/
+{
+  int x__s9 = 0;
+  _cast_double_int@math(x, x__s9);
+  _out = prev_out + 1;
+  return;
+}
+/* END PACKAGE ANONYMOUS*/
+/* BEGIN PACKAGE math*/
+package math{
+  /*math.skh:43*/
+  @Native("{_out = (int)v;}") 
+uninterp void _cast_double_int (double v, ref int _out)/*math.skh:43*/
+  /*math.skh:40*/
+  @Native("{_out = (float)v;}") 
+uninterp void _cast_int_float (int v, ref float _out)/*math.skh:40*/
+  /*math.skh:33*/
+  @Native("{_out = atanf(v);}") 
+uninterp void arctan (float v, ref float _out)/*math.skh:33*/
+  /*math.skh:17*/
+  @Native("{_out = cosf(v);}") 
+uninterp void cos (float v, ref float _out)/*math.skh:17*/
+  /*math.skh:54*/
+  @Native("{_out = expf(v);}") 
+uninterp void exp (float v, ref float _out)/*math.skh:54*/
+  /*math.skh:28*/
+  @Native("{_out = logf(v);}") 
+uninterp void log (float v, ref float _out)/*math.skh:28*/
+  /*math.skh:15*/
+  @Native("{_out = sinf(v);}") 
+uninterp void sin (float v, ref float _out)/*math.skh:15*/
+  /*math.skh:21*/
+  @Native("{_out = sqrtf(v);}") 
+uninterp void sqrt (float v, ref float _out)/*math.skh:21*/
+  /*math.skh:19*/
+  @Native("{_out = tanf(v);}") 
+uninterp void tan (float v, ref float _out)/*math.skh:19*/
+  /* END PACKAGE math*/
+}
+[SKETCH] DONE
+Total time = 1359
+time=2

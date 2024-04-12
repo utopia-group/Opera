@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_s prev_len x__ -> (((prev_s + x__)/(prev_len + 1)), (prev_s + x__, (prev_len + 1)))",
+  "qe_time": 0.9913699626922607,
+  "syn_time": 0.42020416259765625,
+  "parse_time": 0.0009961128234863281,
+  "test_time": 0.1419970989227295,
+  "total_time": 1.5545721054077148,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    6,
+    2,
+    3
+  ],
+  "offline_ast_size": 11,
+  "online_ast_size": 14
+}

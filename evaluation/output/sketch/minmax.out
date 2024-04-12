@@ -1,0 +1,122 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/stats/minmax.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+/*minmax.sk:64*/
+
+void _main (int[3] in)/*minmax.sk:64*/
+{
+  int prev_out_s7 = 0;
+  minmax(2, in[0::2], prev_out_s7);
+  int prev_mn_s9 = 0;
+  min(2, in[0::2], prev_mn_s9);
+  int prev_mx_s11 = 0;
+  max(2, in[0::2], prev_mx_s11);
+  int new_out_s13 = 0;
+  minmax(3, in, new_out_s13);
+  int _out_s15 = 0;
+  minmax_online(prev_out_s7, prev_mn_s9, prev_mx_s11, in[2], _out_s15);
+  assert (new_out_s13 == _out_s15); //Assert at minmax.sk:74 (0)
+}
+/*minmax.sk:64*/
+
+void main__Wrapper (int[3] in)  implements main__WrapperNospec/*minmax.sk:64*/
+{
+  _main(in);
+}
+/*minmax.sk:64*/
+
+void main__WrapperNospec (int[3] in)/*minmax.sk:64*/
+{ }
+/*minmax.sk:30*/
+
+void max (int len, int[len] in, ref int _out)/*minmax.sk:30*/
+{
+  _out = 0;
+  for(int i = 0; i < len; i = i + 1)/*Canonical*/
+  {
+    if((in[i]) > _out)/*minmax.sk:33*/
+    {
+      _out = in[i];
+    }
+  }
+  return;
+}
+/*minmax.sk:20*/
+
+void min (int len, int[len] in, ref int _out)/*minmax.sk:20*/
+{
+  _out = 1000;
+  for(int i = 0; i < len; i = i + 1)/*Canonical*/
+  {
+    if((in[i]) < _out)/*minmax.sk:23*/
+    {
+      _out = in[i];
+    }
+  }
+  return;
+}
+/*minmax.sk:40*/
+
+void minmax (int len, int[len] in, ref int _out)/*minmax.sk:40*/
+{
+  int mn_s27 = 0;
+  min(len, in, mn_s27);
+  int mx_s29 = 0;
+  max(len, in, mx_s29);
+  _out = mx_s29 - mn_s27;
+  return;
+}
+/*minmax.sk:46*/
+
+void minmax_online (int prev_out, int prev_mn, int prev_mx, int x, ref int _out)/*minmax.sk:46*/
+{
+  int mx;
+  mx = prev_mx;
+  int mn;
+  mn = prev_mn;
+  if(x >= prev_mx)/*minmax.sk:54*/
+  {
+    mx = x;
+  }
+  if(prev_mn > x)/*minmax.sk:57*/
+  {
+    mn = x;
+  }
+  _out = mx - mn;
+  return;
+}
+/* END PACKAGE ANONYMOUS*/
+/* BEGIN PACKAGE math*/
+package math{
+  /*math.skh:43*/
+  @Native("{_out = (int)v;}") 
+uninterp void _cast_double_int (double v, ref int _out)/*math.skh:43*/
+  /*math.skh:40*/
+  @Native("{_out = (float)v;}") 
+uninterp void _cast_int_float (int v, ref float _out)/*math.skh:40*/
+  /*math.skh:33*/
+  @Native("{_out = atanf(v);}") 
+uninterp void arctan (float v, ref float _out)/*math.skh:33*/
+  /*math.skh:17*/
+  @Native("{_out = cosf(v);}") 
+uninterp void cos (float v, ref float _out)/*math.skh:17*/
+  /*math.skh:54*/
+  @Native("{_out = expf(v);}") 
+uninterp void exp (float v, ref float _out)/*math.skh:54*/
+  /*math.skh:28*/
+  @Native("{_out = logf(v);}") 
+uninterp void log (float v, ref float _out)/*math.skh:28*/
+  /*math.skh:15*/
+  @Native("{_out = sinf(v);}") 
+uninterp void sin (float v, ref float _out)/*math.skh:15*/
+  /*math.skh:21*/
+  @Native("{_out = sqrtf(v);}") 
+uninterp void sqrt (float v, ref float _out)/*math.skh:21*/
+  /*math.skh:19*/
+  @Native("{_out = tanf(v);}") 
+uninterp void tan (float v, ref float _out)/*math.skh:19*/
+  /* END PACKAGE math*/
+}
+[SKETCH] DONE
+Total time = 1299
+time=2

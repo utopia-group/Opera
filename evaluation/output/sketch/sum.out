@@ -1,0 +1,48 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/stats/sum.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+/*sum.sk:31*/
+
+void _main (double[3] in)/*sum.sk:31*/
+{
+  double prev_s_s3 = 0.0;
+  sum(2, in[0::2], prev_s_s3);
+  double new_s_s5 = 0.0;
+  sum(3, in, new_s_s5);
+  double _out_s7 = 0.0;
+  sum_online(prev_s_s3, in[2], _out_s7);
+  assert (new_s_s5 == _out_s7); //Assert at sum.sk:38 (0)
+}
+/*sum.sk:31*/
+
+void main__Wrapper (double[3] in)  implements main__WrapperNospec/*sum.sk:31*/
+{
+  _main(in);
+}
+/*sum.sk:31*/
+
+void main__WrapperNospec (double[3] in)/*sum.sk:31*/
+{ }
+/*sum.sk:16*/
+
+void sum (int len, double[len] in, ref double _out)/*sum.sk:16*/
+{
+  _out = 0.0;
+  for(int i = 0; i < len; i = i + 1)/*Canonical*/
+  {
+    _out = _out + (in[i]);
+  }
+  return;
+}
+/*sum.sk:24*/
+
+void sum_online (double prev_s, double x, ref double _out)/*sum.sk:24*/
+{
+  double _pac_sc_s12 = (x - (1.0)) + ((1.0) + prev_s);
+  _out = _pac_sc_s12;
+  return;
+}
+/* END PACKAGE ANONYMOUS*/
+[SKETCH] DONE
+Total time = 620
+time=1

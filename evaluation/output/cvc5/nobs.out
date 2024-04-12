@@ -1,0 +1,4 @@
+(
+(define-fun nobs_online ((prev_out Int) (prev_len Int) (prev_n Int) (__x Real)) Int (+ 1 prev_out))
+)
+time=0

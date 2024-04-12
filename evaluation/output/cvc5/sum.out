@@ -1,0 +1,4 @@
+(
+(define-fun sum_online ((prev_out Real) (prev_len Int) (prev_s Real) (__x Real)) Real (+ prev_out __x))
+)
+time=0

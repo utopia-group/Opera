@@ -1,0 +1,80 @@
+(set-logic HO_UFDTNIRA)
+
+(declare-var x Real)
+(declare-var y Real)
+(declare-var z Real)
+
+(declare-var log (-> Real Real))
+(declare-var exp (-> Real Real))
+(declare-var sqrt (-> Real Real)) 
+(declare-var pow (-> Real Real Real)) 
+
+(constraint (= (log 1.0) 0.0))
+(constraint (= (exp 0.0) 1.0))
+(constraint (= (exp (log x)) x))
+(constraint (= (log (exp x)) x))
+(constraint (= (pow x 0.5) (sqrt x)))
+(constraint (= (exp (+ x y)) (* (exp x) (exp y))))
+(constraint (= (log (* x y)) (+ (log x) (log y))))
+(constraint (= (exp (- x y)) (/ (exp x) (exp y))))
+(constraint (= (log (/ x y)) (- (log x) (log y))))
+
+(synth-fun geometric_standard_deviation_twopass_online ((prev_out Real) (prev_len Int) (prev_s Real) (prev_sq_s Real) (__x Real)  (log (-> Real Real)) (exp (-> Real Real)) (sqrt (-> Real Real)) (pow (-> Real Real Real))) Real
+  ((R Real))
+  ((R Real
+     (1.0
+     prev_out
+     (to_real prev_len)
+     prev_s
+     prev_sq_s
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)
+     (exp R)
+     (log R)
+     (sqrt R)
+     (pow R R)
+     (abs R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum_logs ((xs List) (log (-> Real Real))) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (log hd) (sum_logs tl log))))))
+
+(define-fun mean_log ((xs List) (log (-> Real Real))) Real
+  (/ (sum_logs xs log) (len xs)))
+
+(define-fun-rec sum_sqs ((xs List) (m Real) (log (-> Real Real))) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (pow (- (log hd) m) 2.0) (sum_sqs tl m log))))))
+     
+(define-fun geometric_standard_deviation ((xs List) (log (-> Real Real)) (exp (-> Real Real)) (sqrt (-> Real Real))) Real
+   (exp (sqrt (/ (sum_sqs xs (mean_log xs log) log) (len xs)))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+
+(assume (>= xs0 0))
+(assume (>= xs1 0))
+(assume (>= xs2 0))
+(assume (>= x 0))
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 (cons xs2 nil))))))
+    (= (geometric_standard_deviation xs log exp sqrt)
+       (geometric_standard_deviation_twopass_online (geometric_standard_deviation (tl xs) log exp sqrt) (len (tl xs)) (sum_logs (tl xs) log) (sum_sqs (tl xs) (mean_log (tl xs) log) log) x log exp sqrt pow))))
+
+(check-synth)

@@ -1,0 +1,17 @@
+{
+  "solution": "\\prev_out prev_s prev_sq_s prev_len prev_m3 x__ -> (let S = {} in let S = S{s = 0} in let S = S{s = prev_s + x__} in let S = S{mean = (s / (prev_len + 1)); sq_s = 0} in let S = S{sq_s = ((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_len**2 + prev_len))/(prev_len**2 + prev_len))} in let S = S{sigma = ((sq_s / (prev_len + 1)) ^ 0.5); m3 = 0} in let S = S{m3 = ((prev_len - 1)*(prev_len**3*x__**3 - 3*prev_len**2*prev_s*x__**2 + 3*prev_len*prev_s**2*x__ + prev_m3*(prev_len**4 + 2*prev_len**3 + prev_len**2)/(prev_len - 1) - prev_s**3 + prev_s*prev_sq_s*(3*prev_len**2 + 3*prev_len)/(prev_len - 1) + prev_sq_s*x__*(-3*prev_len**3 - 3*prev_len**2)/(prev_len - 1))/(prev_len**4 + 2*prev_len**3 + prev_len**2))} in ((S[m3] / (prev_len + 1)) / (S[sigma] ^ 3)), (prev_s + x__, ((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)), (prev_len + 1), ((prev_len - 1)*(prev_len**3*x__**3 - 3*prev_len**2*prev_s*x__**2 + 3*prev_len*prev_s**2*x__ + prev_m3*(prev_len**4 + 2*prev_len**3 + prev_len**2)/(prev_len - 1) - prev_s**3 + prev_s*prev_sq_s*(3*prev_len**2 + 3*prev_len)/(prev_len - 1) + prev_sq_s*x__*(-3*prev_len**3 - 3*prev_len**2)/(prev_len - 1))/(prev_len**4 + 2*prev_len**3 + prev_len**2))))",
+  "qe_time": 3.5765879154205322,
+  "syn_time": 163.10899591445923,
+  "parse_time": 0.0030999183654785156,
+  "test_time": 0.6173319816589355,
+  "total_time": 167.30602288246155,
+  "num_exprs_to_synthesize": 4,
+  "exprs_sizes": [
+    2,
+    96,
+    3,
+    30
+  ],
+  "offline_ast_size": 38,
+  "online_ast_size": 157
+}

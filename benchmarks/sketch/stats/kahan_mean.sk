@@ -1,0 +1,50 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| simple_expr(choices, bnd-1) (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+double kahan_mean(int len, double[len] in) {
+    double mu = 0.0;
+    double c = 0.0;
+    int n = 0;
+    double y = 0.0;
+    double t = 0.0;
+    for (int i = 0; i < len; i++) {
+        n = n + 1;
+        y = (in[i] - mu) / _cast_int_double(n) - c;
+        t = mu + y;
+        c = (t - mu) - y;
+        mu = t;
+    }
+    return mu;
+}
+
+double kahan_mean_online(double prev_mu, double prev_c, int prev_n, double x) {
+
+    double n_ = _cast_int_double(prev_n);
+    generator double gen() {
+        return {| prev_mu | prev_c | x | n_ | 1.0 |};
+    }
+    return simple_expr(gen, 5);
+}
+
+harness void main(double[3] in) {
+
+    int len = 3;
+
+    double prev_mu = kahan_mean(len-1, in[0::len-1]);
+    double prev_c = 0.0;
+    int prev_n = len - 1;
+    double new_mu = kahan_mean(len, in);
+
+    assert new_mu == kahan_mean_online(prev_mu, prev_c, prev_n, in[len-1]);
+}

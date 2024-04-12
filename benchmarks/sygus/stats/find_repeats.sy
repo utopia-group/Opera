@@ -1,0 +1,66 @@
+(set-logic UFDTNIRA)
+
+(declare-datatype AssocList
+  ((nil-al)
+   (cons-al (key Real) (value Int) (tl AssocList))))
+
+(declare-datatype Entry
+  ((entry (key-e Real) (value-e Int))))
+
+(define-fun-rec get ((map AssocList) (k Real)) Int
+  (match map
+    ((nil-al 0)
+     ((cons-al key value tl) 
+      (ite (= key k) 
+        value 
+        (get tl k))))))
+
+(define-fun-rec set ((map AssocList) (k Real) (v Int)) AssocList
+  (cons-al k v map))
+
+(define-fun-rec filter_greater_than_one ((map AssocList)) AssocList
+  (match map
+    ((nil-al nil-al)
+     ((cons-al k v tl)
+      (ite (> v 1)
+        (set (filter_greater_than_one tl) k v)
+        (filter_greater_than_one tl))))))
+
+(synth-fun find_repeats_online 
+    ((prev_out AssocList) (prev_counts AssocList) (__x Real)) 
+    AssocList
+    ((AL AssocList) (I Int) (R Real))      ; Change the order here
+    ((AL AssocList      
+        (prev_counts
+         (set AL R I)
+         (filter_greater_than_one AL)))
+      
+      (I Int                               ; Start with I Int as per your function signature
+        (1
+         (+ I I)
+         (get AL R)))
+          
+     (R Real
+        (__x))))   
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec gen_counts ((xs List)) AssocList
+  (match xs
+    ((nil nil-al)
+     ((cons hd tl) 
+      (let ((prev_counts (gen_counts tl)))
+        (set prev_counts hd (+ (get prev_counts hd) 1)))))))
+
+(define-fun find_repeats_local ((xs List)) AssocList
+  (filter_greater_than_one (gen_counts xs)))
+
+(constraint
+  (forall ((xs List))
+    (=> (not ((_ is nil) xs))
+        (= (find_repeats_local xs)
+           (find_repeats_online (find_repeats_local (tl xs)) (gen_counts (tl xs)) (hd xs))))))
+
+(check-synth)

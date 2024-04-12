@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_s prev_n x__ -> (let S = {} in let S = S{s = 0.0; n = 0} in let S = S{s = prev_s + x__ if (limit_u - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_s if (limit_l - 3.0 * prev_out <= 0.0) else prev_out*-2.0 + prev_s + x__; n = (prev_n + 1) if (limit_u - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_n} in (S[s] / (S[n] + 1)), (prev_s + x__ if (limit_u - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_s if (limit_l - 3.0 * prev_out <= 0.0) else prev_out*-2.0 + prev_s + x__, (prev_n + 1) if (limit_u - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_n))",
+  "qe_time": 63.94484496116638,
+  "syn_time": 21.286680936813354,
+  "parse_time": 0.0017349720001220703,
+  "test_time": 0.2852342128753662,
+  "total_time": 85.51850295066833,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    14,
+    28
+  ],
+  "offline_ast_size": 26,
+  "online_ast_size": 54
+}

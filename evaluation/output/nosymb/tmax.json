@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_mn x__ -> (let S = {} in let S = let S = S{mn = (prev_mn)} in S{mn = if (limit_l <= x) then if (x < mn) then x else mn else mn} in S[mn], (S[mn]))",
+  "qe_time": 2.1457672119140625e-06,
+  "syn_time": 600.939248085022,
+  "parse_time": 0.001711130142211914,
+  "test_time": 0.2331702709197998,
+  "total_time": 601.1741364002228,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    13
+  ],
+  "offline_ast_size": 14,
+  "online_ast_size": 14
+}

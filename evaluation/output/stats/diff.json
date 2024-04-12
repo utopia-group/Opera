@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_d prev_last x__ -> (let S = {} in let S = S{last = 0.0; d = 0.0} in let S = S{d = -prev_last + x__; last = x__} in S[d], (-prev_last + x__, x__))",
+  "qe_time": 1.639683723449707,
+  "syn_time": 0.002621889114379883,
+  "parse_time": 0.0007631778717041016,
+  "test_time": 0.253497838973999,
+  "total_time": 1.8965749740600586,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    4,
+    1
+  ],
+  "offline_ast_size": 11,
+  "online_ast_size": 15
+}

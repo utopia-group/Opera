@@ -1,0 +1,68 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| simple_expr(choices, bnd-1) (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+double sum(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += in[i];
+    }
+    return s;
+}
+
+double sum_of_square(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += in[i] * in[i];
+    }
+    return s;
+}
+
+double sum_of_cubes(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += in[i] * in[i] * in[i];
+    }
+    return s;
+}
+
+double kstat_3(int len, double[len] in) {
+    double s1 = sum(len, in);
+    double s2 = sum_of_square(len, in);
+    double s3 = sum_of_cubes(len, in);
+    return ((2.0 * s1 * s1 * s1 - 3.0 * _cast_int_double(len) * s1 * s2 + _cast_int_double(len) * _cast_int_double(len) * s3) / 
+            (_cast_int_double(len) * (_cast_int_double(len) - 1.0) * (_cast_int_double(len) - 2.0)));
+}
+
+double kstat_3_online(double prev_out, double prev_s1, double prev_s2, double prev_s3, int prev_len, double x) {
+    double l_ = _cast_int_double(prev_len);
+    generator double gen() {
+        return {| prev_out | prev_s1 | x | prev_s2 | prev_s3 | l_ | 1.0 | 2.0 | 3.0 |};
+    }
+    return simple_expr(gen, 10);
+}
+
+harness void main(double[3] in) {
+
+    int len = 3;
+
+    int prev_len = len - 1;
+    double prev_out = kstat_3(prev_len, in[0::len-1]);
+    double prev_s1 = sum(prev_len, in[0::len-1]);
+    double prev_s2 = sum_of_square(prev_len, in[0::len-1]);
+    double prev_s3 = sum_of_cubes(prev_len, in[0::len-1]);
+
+    double new_out = kstat_3(len, in);
+
+    assert new_out == kstat_3_online(prev_out, prev_s1, prev_s2, prev_s3, prev_len, in[len-1]);
+}

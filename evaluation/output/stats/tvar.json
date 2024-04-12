@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_n prev_s prev_sq_s x__ -> (let S = {} in let S = S{s = 0.0; n = 0} in let S = S{n = (prev_n + 1) if (limit_u - x__ >= 0.0) else prev_n; s = prev_s if (limit_u - x__ < 0.0) else prev_s + x__} in let S = S{avg = (s / n); sq_s = 0.0} in let S = S{sq_s = ((prev_n**2*x__**2 - 2*prev_n*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_n**2 + prev_n))/(prev_n**2 + prev_n)) if (limit_u - x__ >= 0.0) else prev_sq_s} in (S[sq_s] / S[n]), ((prev_n + 1) if (limit_u - x__ >= 0.0) else prev_n, prev_s if (limit_u - x__ < 0.0) else prev_s + x__, ((prev_n**2*x__**2 - 2*prev_n*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_n**2 + prev_n))/(prev_n**2 + prev_n)) if (limit_u - x__ >= 0.0) else prev_sq_s))",
+  "qe_time": 35.96320915222168,
+  "syn_time": 36.77816581726074,
+  "parse_time": 0.002279043197631836,
+  "test_time": 0.4691171646118164,
+  "total_time": 73.21278119087219,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    8,
+    9,
+    36
+  ],
+  "offline_ast_size": 33,
+  "online_ast_size": 71
+}

@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_day prev_channel_stats x__ -> (let S = {} in let S = let S = S{day = prev_day; channel_stats = prev_channel_stats} in S{day = (python(row['dateTime'].year), python(row['dateTime'].month), python(row['dateTime'].day)); channel_stats = python(create_dict({**channel_stats, row['channel']: defaultdict(lambda: dict({'total_bids': 0, 'total_bidders': [], 'total_auctions': [], 'rank1_bids': 0, 'rank1_bidders': [], 'rank1_auctions': [], 'rank2_bids': 0, 'rank2_bidders': [], 'rank2_auctions': [], 'rank3_bids': 0, 'rank3_bidders': [], 'rank3_auctions': []}), {**channel_stats[row['channel']], day: {**channel_stats[row['channel']][day], 'total_bids': channel_stats[row['channel']][day]['total_bids'] + 1, 'total_bidders': channel_stats[row['channel']][day]['total_bidders'] + [row['bidder']], 'total_auctions': channel_stats[row['channel']][day]['total_auctions'] + [row['auction']], 'rank1_bids': channel_stats[row['channel']][day]['rank1_bids'] if row['price'] >= 10000 else channel_stats[row['channel']][day]['rank1_bids'] + 1, 'rank1_bidders': channel_stats[row['channel']][day]['rank1_bidders'] if row['price'] >= 10000 else channel_stats[row['channel']][day]['rank1_bidders'] + [row['bidder']], 'rank1_auctions': channel_stats[row['channel']][day]['rank1_auctions'] if row['price'] >= 10000 else channel_stats[row['channel']][day]['rank1_auctions'] + [row['auction']], 'rank2_bids': channel_stats[row['channel']][day]['rank2_bids'] if 10000 <= row['price'] < 1000000 else channel_stats[row['channel']][day]['rank2_bids'] + 1, 'rank2_bidders': channel_stats[row['channel']][day]['rank2_bidders'] if 10000 <= row['price'] < 1000000 else channel_stats[row['channel']][day]['rank2_bidders'] + [row['bidder']], 'rank2_auctions': channel_stats[row['channel']][day]['rank2_auctions'] if 10000 <= row['price'] < 1000000 else channel_stats[row['channel']][day]['rank2_auctions'] + [row['auction']], 'rank3_bids': channel_stats[row['channel']][day]['rank3_bids'] if row['price'] >= 1000000 else channel_stats[row['channel']][day]['rank3_bids'] + 1, 'rank3_bidders': channel_stats[row['channel']][day]['rank3_bidders'] if row['price'] >= 1000000 else channel_stats[row['channel']][day]['rank3_bidders'] + [row['bidder']], 'rank3_auctions': channel_stats[row['channel']][day]['rank3_auctions'] if row['price'] >= 1000000 else channel_stats[row['channel']][day]['rank3_auctions'] + [row['auction']]}})}))} in python({channel: {day: {key: len(value) if isinstance(value, list) else value for key, value in stats.items()} for day, stats in day_stats.items()} for channel, day_stats in channel_stats.items()}), (S[day], S[channel_stats]))",
+  "qe_time": 0.0006017684936523438,
+  "syn_time": 0.010532855987548828,
+  "parse_time": 0.034288883209228516,
+  "test_time": 11.639482975006104,
+  "total_time": 11.684941053390503,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    339,
+    0
+  ],
+  "offline_ast_size": 369,
+  "online_ast_size": 345
+}

@@ -1,0 +1,75 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (bidder Int)
+                          (dateTime Int)
+                          (price Int)
+                          (extra Int)
+)))
+
+(declare-datatype BidList
+  ((nil)
+   (cons (hd Bid) (tl BidList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (cons x xs))
+
+(define-fun modify ((x Bid)) Bid
+    (bid 
+        (auction x)
+        (bidder x) 
+        (dateTime x)
+        (* 2 (price x)) 
+        (extra x)))
+
+(define-fun-rec query ((xs BidList)) BidList
+  (match xs
+    ((nil nil)
+     ((cons hd tl) (add (query tl) (modify hd)))))
+)
+
+(synth-fun query_online ((prev_out BidList) (__x Bid)) BidList
+  ((L BidList) (B Bid) (I Int) (C Bool))
+  (
+    (L BidList
+      (prev_out
+      (add L B)))
+    (B Bid 
+      (__x (bid I I I I I)))
+    (I Int (
+      2
+      (auction __x)
+      (bidder __x)
+      (dateTime __x)
+      (price __x)
+      (extra __x)
+      (* I I)
+      (+ I I)
+      (- I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (not C)
+      (<= I I)
+      (>= I I)
+      (= I I)))
+    ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+
+(constraint
+  (
+    let (
+      (old_xs (cons xs0 (cons xs1 (cons xs2 nil))))
+      (new_xs (add (cons x (cons xs0 (cons xs1 (cons xs2 nil)))) x))
+    )
+    (= (query new_xs)
+       (query_online (query old_xs) x))
+  ))
+
+(check-synth)

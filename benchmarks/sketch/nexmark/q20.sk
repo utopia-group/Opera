@@ -1,0 +1,141 @@
+pragma options "--bnd-unroll-amnt 8";
+
+struct Bid {
+  int auction;
+  int bidder;
+  int dateTime;
+  int price;
+  int channel;
+  int url;
+  int extra;
+}
+
+adt List<T>{
+    Cons{ T val; List<T> next; }
+    Nil{}
+}
+
+List<T> empty<T>(){
+    return new Nil<T>();
+}
+
+List<T> single<T>(T x){
+    return new Cons<T>(val=x, next=new Nil<T>());
+}
+
+T head<T>(List<T> l){
+    return ((Cons<T>)l).val;
+}
+
+List<T> add<T>(List<T> lst, T val) {
+    return new Cons<T>(val=val, next=lst);
+}
+
+struct Auction {
+  int id;
+  int seller;
+  int category;
+  int expires;
+  int dateTime;
+  int itemName;
+  int description;
+  int initialBid;
+  int reserve;
+  int extra;
+}
+
+generator int simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| choices() (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+generator Bid gen_bid(Auction y, fun terms, int bnd) {
+    assert bnd > 0;
+    return new Bid(auction=y.id, bidder=simple_expr(terms, bnd), channel=simple_expr(terms, bnd), url=simple_expr(terms, bnd), dateTime=simple_expr(terms, bnd), price=simple_expr(terms, bnd), extra=simple_expr(terms, bnd));
+}
+
+generator List<Bid> gen_bid_list(List<Bid> prev_res, Bid x, Bid x2, int bnd) {
+    assert bnd > 0;
+
+    int t = ??;
+
+    if (t == 0) {
+      return empty();
+    }
+    if (t == 1) {
+      return prev_res;
+    }
+    if (t == 2) {
+      return single({| x | x2 |});
+    }
+    if (t == 3) {
+      return add(prev_res, {| x | x2 |});
+    }
+    if (t == 4) {
+      return add(gen_bid_list(prev_res, x, x2, bnd-1), {| x | x2 |});
+    }
+
+}
+
+List<Bid> query(int len, int len2, Bid[len] bids, Auction[len2] auctions) {
+    List<Bid> res = empty();
+    for (int i = 0; i < len; i++) {
+        Bid b = bids[i];
+        for (int j = 0; j < len2; j++) {
+            Auction a = auctions[j];
+            if (b.auction == a.id && a.category > 2){
+                Bid db = gen_bid(a, {|1|2|3|4|5|6|7|}, 2);
+                res = add(res, db);
+            }
+        }
+    }
+    return res;
+}
+
+List<Bid> query_online(List<Bid> prev_res, Auction a, Bid x) {
+  generator int terms() {
+    return {| x.auction | x.bidder | x.dateTime | x.price | x.channel | x.url | x.extra | 1 | 0 | 2 |};
+  }
+
+  return gen_bid_list(prev_res, x, gen_bid(a, terms, 2), 5);
+}
+
+harness void main(
+  int auction_1,
+  int bidder_1,
+  int dateTime_1,
+  int price_1,
+  int channel_1,
+  int url_1,
+  int extra_1,
+  int id_1,
+  int seller_1,
+  int category_1,
+  int expires_1,
+  int dateTimeA_1,
+  int itemName_1,
+  int description_1,
+  int initialBid_1,
+  int reserve_1,
+  int extraA_1
+) {
+
+  Bid bid_1 = new Bid(auction=auction_1, bidder=bidder_1, dateTime=dateTime_1, price=price_1, channel=channel_1, url=url_1, extra=extra_1);
+  Auction auc_1 = new Auction(id=id_1, seller=seller_1, category=category_1, expires=expires_1, dateTime=dateTimeA_1, itemName=itemName_1, description=description_1, initialBid=initialBid_1, reserve=reserve_1, extra=extraA_1);
+
+  Bid[1] bids = {bid_1};
+  Auction[1] auctions = {auc_1};
+
+  int len = 1;
+  int prev_len = len - 1;
+  int len2 = 1;
+
+  List<Bid> prev_out = query(prev_len, len2, bids[0::prev_len], auctions);
+  List<Bid> new_out  = query(len, len2, bids, auctions);
+
+  assert new_out == query_online(prev_out, auctions[len2-1], bids[len-1]);
+}

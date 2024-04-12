@@ -1,0 +1,46 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    int t = ??;
+    if (t == 0) {
+      return choices();
+    } else if (t == 1) {
+      return {| simple_expr(choices, bnd-1) (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    } else if (t == 2) {
+      return sqrt(simple_expr(choices, bnd-1));
+    }
+}
+
+double pow_sum(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += in[i] * in[i];
+    }
+    return s;
+}
+
+double power_mean(int len, double[len] in) {
+    return sqrt(pow_sum(len, in) / _cast_int_double(len));
+}
+
+double power_mean_online(double prev_out, int prev_len, double x) {
+    double l_ = _cast_int_double(prev_len);
+    generator double gen() {
+        return {| prev_out | x | l_ | 1.0 |};
+    }
+    return simple_expr(gen, 7);
+}
+
+harness void main(double[3] in) {
+    int len = 3;
+  
+    int prev_len = len - 1;
+    double prev_out = power_mean(prev_len, in[0::len-1]);
+    double new_out = power_mean(len, in);
+
+    assert new_out == power_mean_online(prev_out, prev_len, in[len-1]);
+}

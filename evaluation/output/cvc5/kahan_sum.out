@@ -1,0 +1,4 @@
+(
+(define-fun kahan_sum_online ((prev_len Int) (prev_n Real) (prev_y Real) (prev_t Real) (prev_c Real) (prev_mu Real) (__x Real)) Real (+ prev_t __x))
+)
+time=0

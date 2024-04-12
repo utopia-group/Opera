@@ -1,0 +1,170 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/nexmark/q2.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+struct Bid {
+    int auction;
+    int bidder;
+    int dateTime;
+    int price;
+    int extra;
+}
+struct List<T> {
+    @Immutable()
+}
+struct Cons<T> extends List@ANONYMOUS {
+    T val;
+    List<T> next;
+    @Immutable()
+}
+struct Nil<T> extends List@ANONYMOUS {
+    @Immutable()
+}
+/*q2.sk:82*/
+
+void _main (int auction_1, int bidder_1, int dateTime_1, int price_1, int extra_1, int auction_2, int bidder_2, int dateTime_2, int price_2, int extra_2, int auction_3, int bidder_3, int dateTime_3, int price_3, int extra_3)/*q2.sk:82*/
+{
+  Bid@ANONYMOUS bid_1 = new Bid(auction=auction_1, bidder=bidder_1, dateTime=dateTime_1, price=price_1, extra=extra_1);
+  Bid@ANONYMOUS bid_2 = new Bid(auction=auction_2, bidder=bidder_2, dateTime=dateTime_2, price=price_2, extra=extra_2);
+  Bid@ANONYMOUS bid_3 = new Bid(auction=auction_3, bidder=bidder_3, dateTime=dateTime_3, price=price_3, extra=extra_3);
+  Bid[3] in = ((Bid[3]){bid_1,bid_2,bid_3});
+  List@ANONYMOUS<Bid> prev_out_s14 = null;
+  query(2, in[0::2], prev_out_s14);
+  List@ANONYMOUS<Bid> new_out_s16 = null;
+  query(3, in, new_out_s16);
+  List@ANONYMOUS<Bid> _out_s18 = null;
+  query_online(prev_out_s14, in[2], _out_s18);
+  bit _out_s20 = 0;
+  equals_List_s1(new_out_s16, _out_s18, 6, _out_s20);
+  assert (_out_s20); //Assert at q2.sk:111 (0)
+}
+/*q2.sk:37*/
+
+void add <T> (List<T> lst, T val, ref List<T> _out)/*q2.sk:37*/
+{
+  _out = new Cons<T>(val=val, next=lst);
+  return;
+}
+/*q2.sk:25*/
+
+void empty <T> (ref List<T> _out)/*q2.sk:25*/
+{
+  _out = new Nil<T>();
+  return;
+}
+/*q2.sk:111*/
+@IsEquals() 
+void equals_List_s1 (List@ANONYMOUS<Bid> left_s2, List@ANONYMOUS<Bid> right_s3, int bnd_s4, ref bit _out)/*q2.sk:111*/
+{
+  if(bnd_s4 <= 0)/*q2.sk:111*/
+  {
+    _out = 0;
+    return;
+  }
+  if((left_s2 == (null)) && (right_s3 == (null)))/*q2.sk:111*/
+  {
+    _out = 1;
+    return;
+  }
+  if(left_s2 == (null))/*q2.sk:111*/
+  {
+    _out = 0;
+    return;
+  }
+  if(right_s3 == (null))/*q2.sk:111*/
+  {
+    _out = 0;
+    return;
+  }
+  switch(left_s2){/*q2.sk:111*/
+    case Cons:
+    {
+      switch(right_s3){/*q2.sk:111*/
+        case Cons:
+        {
+          bit _pac_sc_s10 = (left_s2.val) == (right_s3.val);
+          if(_pac_sc_s10)/*q2.sk:111*/
+          {
+            bit _pac_sc_s10_s12 = 0;
+            equals_List_s1(left_s2.next, right_s3.next, bnd_s4 - 1, _pac_sc_s10_s12);
+            _pac_sc_s10 = _pac_sc_s10_s12;
+          }
+          _out = _pac_sc_s10;
+          return;
+        }
+        case default:
+        {
+          _out = 0;
+          return;
+        }
+      }
+    }
+    case Nil:
+    {
+      switch(right_s3){/*q2.sk:111*/
+        case Nil:
+        {
+          _out = 1;
+          return;
+        }
+        case default:
+        {
+          _out = 0;
+          return;
+        }
+      }
+    }
+  }
+}
+/*q2.sk:82*/
+
+void main__Wrapper (int auction_1, int bidder_1, int dateTime_1, int price_1, int extra_1, int auction_2, int bidder_2, int dateTime_2, int price_2, int extra_2, int auction_3, int bidder_3, int dateTime_3, int price_3, int extra_3)  implements main__WrapperNospec/*q2.sk:82*/
+{
+  _main(auction_1, bidder_1, dateTime_1, price_1, extra_1, auction_2, bidder_2, dateTime_2, price_2, extra_2, auction_3, bidder_3, dateTime_3, price_3, extra_3);
+}
+/*q2.sk:82*/
+
+void main__WrapperNospec (int auction_1, int bidder_1, int dateTime_1, int price_1, int extra_1, int auction_2, int bidder_2, int dateTime_2, int price_2, int extra_2, int auction_3, int bidder_3, int dateTime_3, int price_3, int extra_3)/*q2.sk:82*/
+{ }
+/*q2.sk:63*/
+
+void query (int len, Bid[len] in, ref List<Bid> _out)/*q2.sk:63*/
+{
+  List@ANONYMOUS<Bid> res_s40 = null;
+  empty(res_s40)//{T=Bid};
+  List@ANONYMOUS<Bid> res;
+  res = res_s40;
+  for(int i = 0; i < len; i = i + 1)/*Canonical*/
+  {
+    Bid@ANONYMOUS x = in[i];
+    if((x.auction) > 3)/*q2.sk:67*/
+    {
+      List@ANONYMOUS<Bid> res_s42 = null;
+      add(res, x, res_s42)//{T=Bid};
+      res = res_s42;
+    }
+  }
+  _out = res;
+  return;
+}
+/*q2.sk:74*/
+
+void query_online (List<Bid> prev_res, Bid x, ref List<Bid> _out)/*q2.sk:74*/
+{
+  int _out_s22 = x.auction;
+  if(3 >= _out_s22)/*q2.sk:75*/
+  {
+    _out = prev_res;
+    return;
+  }
+  else
+  {
+    List@ANONYMOUS<Bid> _out_s38 = null;
+    add(prev_res, x, _out_s38)//{T=Bid};
+    _out = _out_s38;
+    return;
+  }
+}
+/* END PACKAGE ANONYMOUS*/
+[SKETCH] DONE
+Total time = 705
+time=1

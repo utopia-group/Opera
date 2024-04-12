@@ -1,0 +1,42 @@
+// include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+pragma options "--fe-fpencoding AS_FFIELD";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| choices() (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+double diff(int len, double[len] in) {
+    double last = 0.0;
+    double d = 0.0;
+    for (int i = 0; i < len; i++) {
+        d = in[i] - last;
+        last = in[i];
+    }
+    return d;
+}
+
+double diff_online(double prev_last, double prev_d, double x) {
+    generator double gen() {
+        return {| prev_last | prev_d | x | 1.0 |};
+    }
+    return simple_expr(gen, 4);
+}
+
+harness void main(double[3] in) {
+
+    int len = 3;
+
+    double prev_last = in[len-2];
+    double prev_d = diff(len-1, in[0::len-1]);
+    double new_out = diff(len, in);
+
+    assert new_out == diff_online(prev_last, prev_d, in[len-1]);
+}

@@ -1,0 +1,16 @@
+{
+  "solution": null,
+  "qe_time": 39.63963174819946,
+  "syn_time": 37.11836290359497,
+  "parse_time": 0.0017316341400146484,
+  "test_time": 0.6671168804168701,
+  "total_time": 77.42685079574585,
+  "num_exprs_to_synthesize": 4,
+  "exprs_sizes": [
+    8,
+    9,
+    36
+  ],
+  "offline_ast_size": 34,
+  "online_ast_size": 57
+}

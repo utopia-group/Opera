@@ -1,0 +1,60 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| simple_expr(choices, bnd-1) (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+double sum(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += in[i];
+    }
+    return s;
+}
+
+double mean(int len, double[len] in) {
+    return sum(len, in) / _cast_int_double(len);
+}
+
+double sq_sum(int len, double[len] in, double avg) {
+    double sq_s = 0.0;
+    for (int i = 0; i < len; i++) {
+        sq_s += (in[i] - avg) * (in[i] - avg);
+    }
+    return sq_s;
+}
+
+double var(int len, double[len] in) {
+    double avg = mean(len, in);
+    return sq_sum(len, in, avg) / _cast_int_double(len);
+}
+
+double var_online(double prev_out, double prev_s, double prev_sq_s, int prev_len, double x) {
+    double l_ = _cast_int_double(prev_len);
+    generator double gen() {
+        return {| prev_out | prev_s | x | prev_sq_s | l_ | 1.0 |};
+    }
+    return simple_expr(gen, 5);
+}
+
+harness void main(double[3] in) {
+
+    int len = 3;
+
+    int prev_len = len - 1;
+    double prev_out = var(prev_len, in[0::len-1]);
+    double prev_s = sum(prev_len, in[0::len-1]);
+    double prev_avg = mean(prev_len, in[0::len-1]);
+    double prev_sq_s = sq_sum(prev_len, in[0::len-1], prev_avg);
+    double new_out = var(len, in);
+
+    assert new_out == var_online(prev_out, prev_s, prev_sq_s, prev_len, in[len-1]);
+}

@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_var0 x__ -> (let S = {} in let S = let S = prev_var0 in let S = foldl(\\S P -> S{nexmark_q3 = if (python(A['seller']) == python(P['id'])) then if python(A['category'] == 2 and P['state'] != 'OR') then python([*nexmark_q3, {'city': P['city'], 'state': P['state'], 'id': A['id']}]) else nexmark_q3 else nexmark_q3}, S{}, person) in S in S[nexmark_q3], (prev_var0))",
+  "qe_time": 0.0003962516784667969,
+  "syn_time": 0.0018086433410644531,
+  "parse_time": 0.0034384727478027344,
+  "test_time": 30.982006072998047,
+  "total_time": 30.987656116485596,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    37
+  ],
+  "offline_ast_size": 38,
+  "online_ast_size": 37
+}

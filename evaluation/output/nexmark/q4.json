@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_var0 x__ -> (let S = {} in let S = let S = prev_var0 in let S = foldl(\\S b -> S{max_price = if python(a['id'] == b['auction'] and a['dateTime'] != b['dateTime']) then if (python(b['price']) > max_price) then python(b['price']) else max_price else max_price}, S{max_price = 0}, bid) in S{result = if (max_price > 0) then if python(a['category'] in result) then python({**result, a['category']: (result[a['category']][0] + max_price, result[a['category']][1] + 1)}) else python({**result, a['category']: (max_price, 1)}) else result} in python({category: s / c for category, (s, c) in result.items()}), (prev_var0))",
+  "qe_time": 0.0003876686096191406,
+  "syn_time": 0.0020160675048828125,
+  "parse_time": 0.006054878234863281,
+  "test_time": 25.854676723480225,
+  "total_time": 25.863147020339966,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    63
+  ],
+  "offline_ast_size": 75,
+  "online_ast_size": 75
+}

@@ -1,0 +1,13 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/stats/geometric_mean.sk
+
+
+*** Rejected
+    [0;31m[1699814047.2260 - ERROR] [SKETCH] Sketch Not Resolved Error: 
+
+*** Rejected
+The sketch could not be resolved.[0m
+    [0;32m[1699814047.2350 - DEBUG] [SKETCH] stack trace written to file: /home/vscode/.sketch/tmp/stacktrace.txt[0m
+    [0;32m[1699814047.2360 - DEBUG] Backend solver input file at /home/vscode/.sketch/tmp/geometric_mean.sk/input0.tmp[0m
+Total time = 549513
+time=550

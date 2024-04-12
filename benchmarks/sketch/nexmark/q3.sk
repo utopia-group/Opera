@@ -1,0 +1,137 @@
+pragma options "--bnd-unroll-amnt 8";
+
+struct Person {
+  int id;
+  int state;
+  int city;
+}
+
+struct Auction {
+  int id;
+  int seller;
+  int category;
+  int expires;
+  int dateTime;
+  int itemName;
+  int description;
+  int initialBid;
+  int reserve;
+  int extra;
+}
+
+adt List<T>{
+    Cons{ T val; List<T> next; }
+    Nil{}
+}
+
+List<T> empty<T>(){
+    return new Nil<T>();
+}
+
+List<T> single<T>(T x){
+    return new Cons<T>(val=x, next=new Nil<T>());
+}
+
+T head<T>(List<T> l){
+    return ((Cons<T>)l).val;
+}
+
+List<T> add<T>(List<T> lst, T val) {
+    return new Cons<T>(val=val, next=lst);
+}
+
+struct Res {
+  int city;
+  int state;
+  int id;
+}
+
+generator int simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| choices() (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+generator Res gen_res(fun terms, int bnd) {
+    assert bnd > 0;
+    return new Res(city=simple_expr(terms, bnd), state=simple_expr(terms, bnd), id=simple_expr(terms, bnd));
+}
+
+
+
+List<Res> query(int len, int _, Auction[len] in, Person[_] person) {
+    List<Res> res = empty();
+    for (int i = 0; i < len; i++) {
+        Auction A = in[i];
+        for (int j = 0; j < len; j++) {
+            Person P = person[j];
+            if (A.seller == P.id && A.category == 2 && P.state != 0){
+                Res result = new Res(city=P.city, state=P.state, id=A.id);
+                res = add(res, result);
+            }
+        }
+    }
+    return res;
+}
+
+List<Res> query_online(List<Res> prev_out, Person P, Auction A) {
+  generator int terms() {
+    return {| A.id | A.category | P.city | P.state | 1 | 0 | 2 |};
+  }
+
+  if (A.seller == P.id && A.category == 2 && P.state != 0){
+      Res result = gen_res(terms, 3);
+      return add(prev_out, result);
+  }
+
+  return prev_out;
+}
+
+
+harness void main(
+  int id_1,
+  int state_1,
+  int city_1,
+  
+  int id_2,
+  int state_2,
+  int city_2,
+  
+  int id_3,
+  int state_3,
+  int city_3,
+  
+  int id_4,
+  int seller_4,
+  int category_4,
+
+  int id_5,
+  int seller_5,
+  int category_5,
+
+  int id_6,
+  int seller_6,
+  int category_6
+) {
+
+  Person person_1 = new Person(id=id_1, state=state_1, city=city_1);
+  Person person_2 = new Person(id=id_2, state=state_2, city=city_2);
+  Person person_3 = new Person(id=id_3, state=state_3, city=city_3);
+  Person[3] person = {person_1, person_2, person_3};
+
+  Auction A1 = new Auction(id=id_4, seller=seller_4, category=category_4);
+  Auction A2 = new Auction(id=id_5, seller=seller_5, category=category_5);
+  Auction A3 = new Auction(id=id_6, seller=seller_6, category=category_6);
+  Auction[3] in = {A1, A2, A3};
+
+  int len = 3;
+  int prev_len = len - 1;
+
+  List<Res> prev_out = query(prev_len, len, in[0::prev_len], person);
+  List<Res> new_out  = query(len, len, in, person);
+
+  assert new_out == query_online(prev_out, person[len-1], in[len-1]);
+}

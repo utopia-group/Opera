@@ -1,0 +1,105 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (bidder Int)
+                          (dateTime Int)
+                          (price Int)
+                          (extra Int)
+                          (url Int)
+                          (dir1 Int)
+                          (dir2 Int)
+                          (dir3 Int)
+)))
+
+(declare-datatype Person ((person
+                          (pid Int)
+                          (pstate Int)
+                          (pcity Int)
+)))
+
+(declare-datatype Auction ((auction
+                          (aseller Int)
+                          (acategory Int)
+                          (aid Int)
+)))
+
+(declare-datatype PersonList
+  ((pnil)
+   (pcons (phd Person) (ptl PersonList))))
+  
+(declare-datatype AuctionList
+  ((anil)
+   (acons (ahd Person) (atl PersonList))))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (bcons x xs))
+
+(define-fun splitURL ((x Bid)) Bid 
+  (bid 
+    (auction x) 
+    (bidder x) 
+    (price x) 
+    (dateTime x)
+    (extra x)
+    (url x)
+    (- (url x) 2) 
+    (div (url x) 2) 
+    (+ (url x) 1)
+  ))
+
+(define-fun-rec query ((xs BidList)) BidList
+  (match xs
+    ((bnil bnil)
+     ((bcons hd tl) 
+       (let ((new_bid (splitURL hd))) 
+         (add (query tl) new_bid))))))
+
+(synth-fun query_online ((prev_out BidList) (__x Bid)) BidList
+  ((L BidList) (B Bid) (I Int) (C Bool))
+  (
+    (L BidList
+      (prev_out
+       (add L B)))
+    (B Bid 
+      (__x
+      (splitURL B)
+      (bid I I I I I I I I I)))
+    (I Int (
+      (url __x)
+      1
+      2
+      (+ I I)
+      (- I I)
+      (div I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (not C)
+      (= I I)
+      (> I I)
+      (<= I I)
+      (>= I I)))
+    ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+
+(constraint
+  (
+    let (
+      (old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil))))
+      (new_xs (add (bcons x (bcons xs0 (bcons xs1 (bcons xs2 bnil)))) x))
+    )
+    (= (query new_xs)
+       (query_online (query old_xs) x))
+  ))
+
+(check-synth)

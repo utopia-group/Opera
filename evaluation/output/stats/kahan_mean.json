@@ -1,0 +1,18 @@
+{
+  "solution": "\\prev_out prev_n prev_y prev_t prev_c prev_mu x__ -> (let S = {} in let S = let S = S{n = prev_n; y = prev_y; t = prev_mu; c = prev_c; mu = prev_mu} in S{n = (n + 1); y = (((x - mu) / n) - c); t = (mu + y); c = ((t - mu) - y); mu = t} in S[mu], (S[n], S[y], S[t], S[c], S[mu]))",
+  "qe_time": 8.262840986251831,
+  "syn_time": 2.5934231281280518,
+  "parse_time": 0.038915395736694336,
+  "test_time": 1.5097391605377197,
+  "total_time": 12.40492844581604,
+  "num_exprs_to_synthesize": 5,
+  "exprs_sizes": [
+    22,
+    0,
+    0,
+    0,
+    0
+  ],
+  "offline_ast_size": 23,
+  "online_ast_size": 27
+}

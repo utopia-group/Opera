@@ -1,0 +1,94 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (channel Int)
+                          (url Int)
+                          (channel_id Int)
+)))
+
+(declare-datatype Channel ((channel
+                            (name Int)
+                            (id Int)
+)))
+
+(declare-datatype ChannelList
+  ((nil)
+   (cons (hd Channel) (tl ChannelList))))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (bcons x xs))
+
+(define-fun-rec channel_in ((x Bid) (channels ChannelList)) Bool
+  (match channels
+    ((nil false)
+     ((cons hd tl) 
+       (ite (= (channel x) (name hd))
+            true
+            (channel_in x tl))))))
+
+(define-fun-rec channel_id ((x Bid) (channels ChannelList)) Int
+  (match channels
+    ((nil 0)
+     ((cons hd tl) 
+       (ite (= (channel x) (name hd))
+            (id hd)
+            (channel_id x tl))))))
+
+(define-fun update_bid ((x Bid) (channels ChannelList)) Bid
+  (bid (channel x) (url x) (channel_id x channels))) 
+
+(define-fun-rec query ((xs BidList) (channels ChannelList)) BidList
+  (match xs
+    ((bnil bnil)
+     ((bcons hd tl) 
+      (ite (channel_in hd channels)
+           (add (query tl channels) (update_bid hd channels))
+           (query tl channels))))))
+
+(synth-fun query_online ((prev_out BidList) (__x Bid) (channels ChannelList)) BidList
+  ((L BidList) (B Bid) (C Channel) (I Int) (C2 Bool))
+  (
+    (L BidList
+      (prev_out
+      (add L B)))
+    (B Bid 
+      (__x (bid I I I)))
+    (C Channel 
+      ((channel I I)))
+    (I Int (
+      (channel __x)
+      (url __x)
+      (channel_id __x)
+      (id C)
+      (name C)
+      (+ I I)
+      (- I I)
+      (ite C2 I I)))
+    (C2 Bool (
+      (and C2 C2)
+      (or C2 C2)
+      (not C2)
+      (= I I)))
+    ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+(declare-var channels ChannelList)
+
+(constraint
+  (
+    let (
+      (old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil))))
+      (new_xs (add (bcons x (bcons xs0 (bcons xs1 (bcons xs2 bnil)))) x))
+    )
+    (= (query new_xs channels)
+       (query_online (query old_xs channels) x channels))
+  ))
+
+(check-synth)

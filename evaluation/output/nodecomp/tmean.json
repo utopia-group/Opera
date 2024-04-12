@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_n prev_s x__ -> (((prev_out*(prev_n + 1) + x__)/(prev_n + 2)) if (limit_u - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_out if (limit_l - 3.0 * prev_out <= 0.0) else (prev_out*3.0 + -1.0*prev_s) / 2, ((prev_n + 1) if (limit_u - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_n, prev_s + x__ if (limit_u - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_s))",
+  "qe_time": 107.2132580280304,
+  "syn_time": 62.406651973724365,
+  "parse_time": 0.0015859603881835938,
+  "test_time": 0.350383996963501,
+  "total_time": 169.9718897342682,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    36,
+    14,
+    14
+  ],
+  "offline_ast_size": 26,
+  "online_ast_size": 67
+}

@@ -1,0 +1,49 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/stats/diff.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+/*diff.sk:33*/
+
+void _main (double[3] in)/*diff.sk:33*/
+{
+  double prev_d_s3 = 0.0;
+  diff(2, in[0::2], prev_d_s3);
+  double new_out_s5 = 0.0;
+  diff(3, in, new_out_s5);
+  double _out_s7 = 0.0;
+  diff_online(in[1], prev_d_s3, in[2], _out_s7);
+  assert (new_out_s5 == _out_s7); //Assert at diff.sk:41 (0)
+}
+/*diff.sk:16*/
+
+void diff (int len, double[len] in, ref double _out)/*diff.sk:16*/
+{
+  double last = 0.0;
+  _out = 0.0;
+  for(int i = 0; i < len; i = i + 1)/*Canonical*/
+  {
+    _out = (in[i]) - last;
+    last = in[i];
+  }
+  return;
+}
+/*diff.sk:26*/
+
+void diff_online (double prev_last, double prev_d, double x, ref double _out)/*diff.sk:26*/
+{
+  _out = prev_d - (prev_last + (prev_d - x));
+  return;
+}
+/*diff.sk:33*/
+
+void main__Wrapper (double[3] in)  implements main__WrapperNospec/*diff.sk:33*/
+{
+  _main(in);
+}
+/*diff.sk:33*/
+
+void main__WrapperNospec (double[3] in)/*diff.sk:33*/
+{ }
+/* END PACKAGE ANONYMOUS*/
+[SKETCH] DONE
+Total time = 714
+time=1

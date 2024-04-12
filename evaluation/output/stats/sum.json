@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_s x__ -> (let S = {} in let S = S{s = 0.0} in let S = S{s = prev_s + x__} in S[s], (prev_s + x__))",
+  "qe_time": 0.9096419811248779,
+  "syn_time": 0.0014369487762451172,
+  "parse_time": 0.0008530616760253906,
+  "test_time": 0.07249784469604492,
+  "total_time": 0.9844369888305664,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    3
+  ],
+  "offline_ast_size": 9,
+  "online_ast_size": 10
+}

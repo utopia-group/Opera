@@ -1,0 +1,103 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Time ((timeValue (hour Int) (minute Int) (second Int))))
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (bidder Int)
+                          (dateTime Time)
+                          (price Int)
+                          (extra Int)
+                          (c_count Int))))
+                          
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (bcons x xs))
+
+(define-fun day_time ((t Time)) Bool
+  (and (> (hour t) 6) (<= (hour t) 18)))
+
+(define-fun night_time ((t Time)) Bool
+  (or (<= (hour t) 6) (>= (hour t) 20)))
+
+(define-fun other_time ((t Time)) Bool
+  (not (or (day_time t) (night_time t))))
+
+(define-fun bid_time_type ((t Time)) Int
+  (ite (day_time t) 1 (ite (night_time t) 2 3)))
+  
+(define-fun adjust_price ((x Bid)) Int
+  (* (price x) 2)) 
+
+(define-fun c_counts ((x Bid)) Int
+  (+ (extra x) 1))
+
+(define-fun-rec query ((xs BidList)) BidList
+  (match xs
+    ((bnil bnil)
+     ((bcons hd tl)
+       (add (query tl) 
+             (bid (auction hd) 
+                  (bidder hd) 
+                  (dateTime hd) 
+                  (price hd)
+                  (extra hd) 
+                  (c_counts hd)))))))
+                  
+
+(synth-fun query_online ((prev_out BidList) (__x Bid)) BidList
+  ((L BidList) (B Bid) (T Time) (I Int) (C Bool))
+  (
+    (L BidList
+      (prev_out
+      (add L B)))
+    (B Bid 
+      (__x (bid I I T I I I)))
+    (T Time
+      ((dateTime __x) (timeValue I I I)))
+    (I Int (
+      1 2 3 6 18 20
+      (auction __x)
+      (bidder __x)
+      (price __x)
+      (extra __x)
+      (adjust_price B)
+      (bid_time_type T)
+      (c_counts B)
+      (+ I I)
+      (- I I)
+      (* I I)
+      (div I I)
+      (ite C I I)))
+    (C Bool (
+      (day_time T)
+      (night_time T)
+      (other_time T)
+      (and C C)
+      (or C C)
+      (not C)
+      (= I I)
+      (> I I)
+      (<= I I)
+      (>= I I))))
+    )
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+
+(constraint
+  (
+    let (
+      (old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil))))
+      (new_xs (add (bcons x (bcons xs0 (bcons xs1 (bcons xs2 bnil)))) x))
+    )
+    (= (query new_xs)
+       (query_online (query old_xs) x))
+  ))
+
+(check-synth)

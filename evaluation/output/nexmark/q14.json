@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_new_bid x__ -> (let S = {} in let S = let S = S{new_bid = prev_out} in S{new_bid = python([*new_bid, {'auction': x['auction'], 'bidder': x['bidder'], 'price': x['price'] * 0.908, 'bidTimeType': 'dayTime' if 6 < x['dateTime'].hour <= 18 else 'nightTime' if x['dateTime'].hour <= 6 or x['dateTime'].hour >= 20 else 'otherTime', 'dateTime': x['dateTime'], 'extra': x['extra'], 'c_counts': str(x['extra']).count('1')}])} in S[new_bid], (S[new_bid]))",
+  "qe_time": 0.00038886070251464844,
+  "syn_time": 0.0019042491912841797,
+  "parse_time": 0.017363309860229492,
+  "test_time": 2.116823196411133,
+  "total_time": 2.136486291885376,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    52
+  ],
+  "offline_ast_size": 53,
+  "online_ast_size": 53
+}

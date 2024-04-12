@@ -1,0 +1,19 @@
+{
+  "solution": "\\prev_out prev_s_x prev_s_y prev_sq_s_x prev_sq_s_y prev_sq_r prev_len x__ -> (let S = {} in let S = S{s_x = 0; s_y = 0} in let S = S{s_x = prev_s_x + x__1; s_y = prev_s_y + x__2} in let S = S{mean_x = (s_x / (prev_len + 1)); mean_y = (s_y / (prev_len + 1)); sq_s_x = 0; sq_s_y = 0; sq_r = 0} in let S = S{sq_s_x = ((prev_len**2*x__1**2 - 2*prev_len*prev_s_x*x__1 + prev_s_x**2 + prev_sq_s_x*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)); sq_s_y = ((prev_len**2*x__2**2 - 2*prev_len*prev_s_y*x__2 + prev_s_y**2 + prev_sq_s_y*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)); sq_r = ((prev_len**2*x__1*x__2 - prev_len*prev_s_x*x__2 - prev_len*prev_s_y*x__1 + prev_s_x*prev_s_y + prev_sq_r*(prev_len**2 + prev_len))/(prev_len**2 + prev_len))} in let S = S{sigma_x = ((sq_s_x / (prev_len + 1)) ^ 0.5); sigma_y = ((sq_s_y / (prev_len + 1)) ^ 0.5)} in (S[sq_r] / (((prev_len + 1) * S[sigma_x]) * S[sigma_y])), (prev_s_x + x__1, prev_s_y + x__2, ((prev_len**2*x__1**2 - 2*prev_len*prev_s_x*x__1 + prev_s_x**2 + prev_sq_s_x*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)), ((prev_len**2*x__2**2 - 2*prev_len*prev_s_y*x__2 + prev_s_y**2 + prev_sq_s_y*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)), ((prev_len**2*x__1*x__2 - prev_len*prev_s_x*x__2 - prev_len*prev_s_y*x__1 + prev_s_x*prev_s_y + prev_sq_r*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)), (prev_len + 1)))",
+  "qe_time": 46.7641339302063,
+  "syn_time": 116.75397491455078,
+  "parse_time": 0.0031900405883789062,
+  "test_time": 1.199648141860962,
+  "total_time": 164.72095608711243,
+  "num_exprs_to_synthesize": 6,
+  "exprs_sizes": [
+    2,
+    3,
+    3,
+    35,
+    30,
+    30
+  ],
+  "offline_ast_size": 57,
+  "online_ast_size": 139
+}

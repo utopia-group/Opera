@@ -1,0 +1,92 @@
+(set-logic UFDTLIA)
+
+(declare-datatype Bid ((bid
+                          (auction Int)
+                          (bidder Int)
+                          (dateTime Int)
+                          (price Int)
+                          (extra Int)
+                          (dt Int)
+                          (hm Int)
+)))
+
+(declare-datatype Person ((person
+                          (pid Int)
+                          (pstate Int)
+                          (pcity Int)
+)))
+
+(declare-datatype Auction ((auction
+                          (aseller Int)
+                          (acategory Int)
+                          (aid Int)
+)))
+
+(declare-datatype PersonList
+  ((pnil)
+   (pcons (phd Person) (ptl PersonList))))
+  
+(declare-datatype AuctionList
+  ((anil)
+   (acons (ahd Person) (atl PersonList))))
+
+(declare-datatype BidList
+  ((bnil)
+   (bcons (bhd Bid) (btl BidList))))
+
+(define-fun add ((xs BidList) (x Bid)) BidList
+  (bcons x xs))
+
+(define-fun-rec query ((xs BidList)) BidList
+  (match xs
+    ((bnil bnil)
+     ((bcons hd tl) (add (query tl) hd)))
+))
+
+(synth-fun query_online ((prev_out BidList) (__x Bid)) BidList
+  ((L BidList) (B Bid) (I Int) (C Bool))
+  (
+    (L BidList
+      (
+      prev_out
+      (add L B)))
+    (B Bid 
+      (__x (bid I I I I I I I)))
+    (I Int (
+      3
+      (auction __x)
+      (bidder __x)
+      (dateTime __x)
+      (price __x)
+      (extra __x)
+      (dt __x)
+      (hm __x)
+      (+ I I)
+      (- I I)
+      (ite C I I)))
+    (C Bool (
+      (and C C)
+      (or C C)
+      (not C)
+      (= I I)
+      (> I I)
+      (<= I I)
+      (>= I I)))
+    ))
+
+(declare-var xs0 Bid)
+(declare-var xs1 Bid)
+(declare-var xs2 Bid)
+(declare-var x Bid)
+
+(constraint
+  (
+    let (
+      (old_xs (bcons xs0 (bcons xs1 (bcons xs2 bnil))))
+      (new_xs (add (bcons x (bcons xs0 (bcons xs1 (bcons xs2 bnil)))) x))
+    )
+    (= (query new_xs)
+       (query_online (query old_xs) x))
+  ))
+
+(check-synth)

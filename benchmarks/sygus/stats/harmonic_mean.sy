@@ -1,0 +1,53 @@
+(set-logic UFDTNIRA)
+
+(synth-fun harmonic_mean_online ((prev_out Real) (prev_len Int) (prev_s Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_s
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun-rec sum_inv ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (/ 1.0 hd) (sum_inv tl))))))
+
+(define-fun harmonic_mean ((xs List)) Real
+  (/ (len xs) (sum_inv xs)))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var x Real)
+
+(assume (>= xs0 0))
+(assume (>= xs1 0))
+(assume (>= xs2 0))
+(assume (>= x 0))
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+    (= (harmonic_mean xs)
+       (harmonic_mean_online (harmonic_mean (tl xs)) (len (tl xs)) (sum (tl xs)) x))))
+
+(check-synth)

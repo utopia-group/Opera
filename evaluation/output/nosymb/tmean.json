@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_s prev_n x__ -> (let S = {} in let S = let S = S{s = (prev_s); n = (prev_n)} in S{s = if (x >= limit_l) then if (x <= limit_u) then (s + x) else s else s; n = if (x >= limit_l) then if (x <= limit_u) then (n + 1) else n else n} in (S[s] / (S[n] + 1)), (S[s], S[n]))",
+  "qe_time": 1.6689300537109375e-06,
+  "syn_time": 1201.216227054596,
+  "parse_time": 0.0031261444091796875,
+  "test_time": 0.5229902267456055,
+  "total_time": 1201.742352962494,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    23,
+    0
+  ],
+  "offline_ast_size": 26,
+  "online_ast_size": 27
+}

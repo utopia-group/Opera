@@ -1,0 +1,4 @@
+(
+(define-fun mean_online ((prev_out Real) (prev_len Int) (prev_s Real) (__x Real)) Real (/ (+ prev_s __x) (+ 1.0 (to_real prev_len))))
+)
+time=5

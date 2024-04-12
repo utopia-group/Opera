@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_s x__ -> (prev_s + x__, (prev_s + x__))",
+  "qe_time": 0.9784860610961914,
+  "syn_time": 0.0025720596313476562,
+  "parse_time": 0.0007619857788085938,
+  "test_time": 0.1454017162322998,
+  "total_time": 1.127230167388916,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    3,
+    3
+  ],
+  "offline_ast_size": 9,
+  "online_ast_size": 8
+}

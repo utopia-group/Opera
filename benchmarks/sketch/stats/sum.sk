@@ -1,0 +1,39 @@
+// include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+pragma options "--fe-fpencoding AS_FFIELD";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| simple_expr(choices, bnd-1) (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+double sum(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += in[i];
+    }
+    return s;
+}
+
+double sum_online(double prev_s, double x) {
+    generator double gen() {
+        return {| prev_s | x | 1.0 |};
+    }
+    return simple_expr(gen, 3);
+}
+
+harness void main(double[3] in) {
+
+    int len = 3;
+
+    double prev_s = sum(len-1, in[0::len-1]);
+    double new_s = sum(len, in);
+
+    assert new_s == sum_online(prev_s, in[len-1]);
+}

@@ -1,0 +1,90 @@
+(set-logic UFDTNIRA)
+
+(synth-fun diff_online ((prev_out Real) (prev_len Int) (prev_last Real) (prev_last2 Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_last
+     prev_last2
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(synth-fun last_online ((prev_out Real) (prev_len Int) (prev_last Real) (prev_last2 Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_last
+     prev_last2
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(synth-fun last2_online ((prev_out Real) (prev_len Int) (prev_last Real) (prev_last2 Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_last
+     prev_last2
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec get ((xs List) (idx Int)) Real
+  (ite (= idx 0)
+    (hd xs)
+    (get (tl xs) (- idx 1))))
+
+(define-fun last ((xs List)) Real
+  (get xs 0))
+
+(define-fun last2 ((xs List)) Real
+  (get xs 1))
+
+(define-fun diff ((xs List)) Real
+  (- (last xs) (last2 xs)))
+
+;; These must all be ran separately
+;; Separately, they all find the correct implementation fairly quickly
+;; But all of them together takes much longer to run.
+
+(constraint
+  (forall ((xs List))
+    (=> (>= (len xs) 3)
+        (= (diff xs)
+           (diff_online (diff (tl xs)) (len (tl xs)) (get (tl xs) 0) (get (tl xs) 1) (hd xs))))))
+
+; (constraint
+;   (forall ((xs List))
+;     (=> (>= (len xs) 3)
+;         (= (last xs)
+;            (last_online (diff (tl xs)) (len (tl xs)) (get (tl xs) 0) (get (tl xs) 1) (hd xs))))))
+
+; (constraint
+;   (forall ((xs List))
+;     (=> (>= (len xs) 3)
+;         (= (last2 xs)
+;            (last2_online (diff (tl xs)) (len (tl xs)) (get (tl xs) 0) (get (tl xs) 1) (hd xs))))))
+
+(check-synth)

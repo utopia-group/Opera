@@ -1,0 +1,4 @@
+(
+(define-fun find_repeats_online ((prev_out AssocList) (prev_counts AssocList) (__x Real)) AssocList (filter_greater_than_one (set prev_counts __x (+ 1 (get prev_counts __x)))))
+)
+time=1

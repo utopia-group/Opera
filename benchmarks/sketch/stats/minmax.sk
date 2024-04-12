@@ -1,0 +1,75 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+generator int simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| choices() (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+generator bit simple_bool_expr(fun choices) {
+    return {| choices() (< | <= | == | != | >= | >) choices() |};
+}
+
+
+int min(int len, int[len] in) {
+    int mn = 1000;
+    for (int i = 0; i < len; i++) {
+        if (in[i] < mn) {
+            mn = in[i];
+        }
+    }
+    return mn;
+}
+
+int max(int len, int[len] in) {
+    int mx = 0;
+    for (int i = 0; i < len; i++) {
+        if (in[i] > mx) {
+            mx = in[i];
+        }
+    }
+    return mx;
+}
+
+int minmax(int len, int[len] in) {
+    int mn = min(len, in);
+    int mx = max(len, in);
+    return mx - mn;
+}
+
+int minmax_online(int prev_out, int prev_mn, int prev_mx, int x) {
+    generator int gen() {
+        return {| prev_out | prev_mn | prev_mx | x |};
+    }
+
+    int mx = prev_mx;
+    int mn = prev_mn;
+
+    if (simple_bool_expr(gen)) {
+      mx = simple_expr(gen, 2);
+    }
+    if (simple_bool_expr(gen)) {
+      mn = simple_expr(gen, 2);
+    }
+
+    return simple_expr({| mn | mx | x |}, 2);
+}
+
+harness void main(int[3] in) {
+
+    int len = 3;
+
+    int prev_len = len - 1;
+    int prev_out = minmax(prev_len, in[0::len-1]);
+    int prev_mn = min(prev_len, in[0::len-1]);
+    int prev_mx = max(prev_len, in[0::len-1]);
+    int new_out = minmax(len, in);
+
+    assert new_out == minmax_online(prev_out, prev_mn, prev_mx, in[len-1]);
+}

@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_var0 x__ -> (let S = {} in let S = let S = prev_var0 in let S = foldl(\\S s -> S{results = if (python(b['auction']) == python(s['key'])) then python([*results, (b, s['value'])]) else results}, S{}, side_inputs) in S in S[results], (prev_var0))",
+  "qe_time": 0.00039267539978027344,
+  "syn_time": 0.002348184585571289,
+  "parse_time": 0.002251863479614258,
+  "test_time": 57.56211495399475,
+  "total_time": 57.56711387634277,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    22
+  ],
+  "offline_ast_size": 23,
+  "online_ast_size": 22
+}

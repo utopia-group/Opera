@@ -1,0 +1,47 @@
+(set-logic UFDTNIRA)
+
+(synth-fun mean_online ((prev_out Real) (prev_len Int) (prev_s Real) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_s
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun-rec mean_offline ((xs List)) Real
+  (/ (sum xs) (len xs)))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var x Real)
+
+(constraint
+  (let ((old_len 3)
+        (new_len 4)
+        (old_mean (/ (+ xs0 xs1 xs2) 3))
+        (old_sum (+ xs0 xs1 xs2))
+        (new_mean (/ (+ x xs0 xs1 xs2) 4)))
+    (= new_mean
+       (mean_online old_mean old_len old_sum x))))
+
+(check-synth)

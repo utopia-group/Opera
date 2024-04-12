@@ -1,0 +1,4 @@
+(
+(define-fun query_online ((prev_out ReportList) (__x Bid)) ReportList (let ((_let_1 (update_report __x (report 0 0 0 0 0 0 0 0)))) (add (add prev_out _let_1) _let_1)))
+)
+time=269

@@ -1,0 +1,76 @@
+(set-logic HO_UFDTNIRA)
+
+(declare-var x Real)
+(declare-var y Real)
+(declare-var z Real)
+
+(declare-var log (-> Real Real))
+(declare-var exp (-> Real Real))
+
+(constraint (= (log 1.0) 0.0))
+(constraint (= (exp 0.0) 1.0))
+(constraint (= (exp (log x)) x))
+(constraint (= (log (exp x)) x))
+(constraint (= (exp (+ x y)) (* (exp x) (exp y))))
+(constraint (= (log (* x y)) (+ (log x) (log y))))
+(constraint (= (exp (- x y)) (/ (exp x) (exp y))))
+(constraint (= (log (/ x y)) (- (log x) (log y))))
+
+(synth-fun log_sum_exp_online 
+    ((prev_out Real) (prev_alpha Real) (prev_s Real) (__x Real) (log (-> Real Real)) (exp (-> Real Real))) Real
+  ((R Real))
+  ((R Real
+     (0.0
+      prev_out
+      prev_alpha
+      prev_s
+      __x
+      (+ R R)
+      (- R R)
+      (* R R)
+      (/ R R)
+      (exp R)
+      (log R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec max_alpha ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (ite (> hd (max_alpha tl)) hd (max_alpha tl))))))
+
+(define-fun-rec sum_exp ((xs List) (alpha Real)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (exp (- hd alpha)) (sum_exp tl alpha))))))
+
+(define-fun log_sum_exp_offline ((xs List)) Real
+  (let ((alpha (max_alpha xs)))
+    (+ alpha (log (sum_exp xs alpha)))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+
+(assume (>= xs0 0))
+(assume (>= xs1 0))
+(assume (>= xs2 0))
+(assume (>= x 0))
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+    (= (log_sum_exp_offline xs)
+       (log_sum_exp_online 
+          (log_sum_exp_offline (tl xs)) 
+          (max_alpha (tl xs))
+          (sum_exp (tl xs) (max_alpha (tl xs)))
+          x log exp))))
+
+(check-synth)

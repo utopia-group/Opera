@@ -1,0 +1,17 @@
+{
+  "solution": "\\prev_out prev_y prev_t prev_c prev_s x__ -> (let S = {} in let S = S{s = 0.0; c = 0.0} in let S = S{y = x__; t = prev_out + x__; c = 0.0; s = prev_out + x__} in S[s], (x__, prev_out + x__, 0.0, prev_out + x__))",
+  "qe_time": 3.50742769241333,
+  "syn_time": 0.004984140396118164,
+  "parse_time": 0.0012209415435791016,
+  "test_time": 0.4229590892791748,
+  "total_time": 3.9365999698638916,
+  "num_exprs_to_synthesize": 4,
+  "exprs_sizes": [
+    0,
+    3,
+    3,
+    1
+  ],
+  "offline_ast_size": 16,
+  "online_ast_size": 21
+}

@@ -1,0 +1,72 @@
+(set-logic UFDTNIRA)
+
+(synth-fun lr_slope_online ((prev_out Real) (prev_len Int) (prev_x_sum Real) (prev_y_sum Real) (prev_num Real) (prev_den Real) (__x Real) (__y Real)) Real
+  ((R Real))
+  ((R Real
+    (prev_out
+     (to_real prev_len)
+     prev_x_sum
+     prev_y_sum
+     prev_num
+     prev_den
+     __x
+     __y
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun mean ((xs List)) Real
+  (/ (sum xs) (len xs)))
+
+(define-fun-rec sum_sq_diff ((xs List) (ys List) (mu_x Real) (mu_y Real)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd_x tl_x)
+      (let ((hd_y (hd ys))
+            (tl_y (tl ys)))
+        (+ (* (- hd_x mu_x) (- hd_y mu_y)) (sum_sq_diff tl_x tl_y mu_x mu_y)))))))
+
+(define-fun calc_num ((xs List) (ys List)) Real
+  (let ((mu_x (mean xs))
+        (mu_y (mean ys)))
+    (sum_sq_diff xs ys mu_x mu_y)))
+
+(define-fun calc_den ((xs List)) Real
+  (let ((mu_x (mean xs)))
+    (sum_sq_diff xs xs mu_x mu_x)))
+
+(define-fun lr_slope ((xs List) (ys List)) Real
+  (/ (calc_num xs ys) (calc_den xs)))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var x Real)
+
+(declare-var ys0 Real)
+(declare-var ys1 Real)
+(declare-var ys2 Real)
+(declare-var y Real)
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil))))
+        (ys (cons y (cons ys0 (cons ys1 nil)))))
+    (= (lr_slope xs ys)
+       (lr_slope_online (lr_slope (tl xs) (tl ys)) (len (tl xs)) (sum (tl xs)) (sum (tl ys)) (calc_num (tl xs) (tl ys)) (calc_den (tl xs)) (hd xs) (hd ys)))))
+    
+(check-synth)

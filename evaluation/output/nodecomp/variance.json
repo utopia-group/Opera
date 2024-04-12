@@ -1,0 +1,17 @@
+{
+  "solution": "\\prev_out prev_s prev_sq_s prev_len x__ -> (((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_len**2 + prev_len))/(prev_len**3 + 2*prev_len**2 + prev_len)), (prev_s + x__, ((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_s**2 + prev_sq_s*(prev_len**2 + prev_len))/(prev_len**2 + prev_len)), (prev_len + 1)))",
+  "qe_time": 1.1094090938568115,
+  "syn_time": 80.1378538608551,
+  "parse_time": 0.004164934158325195,
+  "test_time": 0.42288684844970703,
+  "total_time": 81.67432713508606,
+  "num_exprs_to_synthesize": 4,
+  "exprs_sizes": [
+    35,
+    2,
+    3,
+    30
+  ],
+  "offline_ast_size": 23,
+  "online_ast_size": 74
+}

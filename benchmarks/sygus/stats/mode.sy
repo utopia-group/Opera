@@ -1,0 +1,66 @@
+(set-logic UFDTNIRA)
+
+(declare-datatype AssocList
+  ((nil-al)
+   (cons-al (key Real) (value Int) (tl AssocList))))
+
+(declare-datatype Entry
+  ((entry (key-e Real) (value-e Int))))
+
+(define-fun-rec get ((map AssocList) (k Real)) Int
+  (match map
+    ((nil-al 0)
+     ((cons-al key value tl) 
+        (ite (= key k) 
+          value 
+          (get tl k))))))
+
+(define-fun-rec get_max_count_p ((map AssocList)) Entry
+  (match map
+    ((nil-al (entry 0.0 0))
+     ((cons-al k v tl)
+        (let ((prev_entry (get_max_count_p tl)))
+          (ite (> v (value-e prev_entry))
+            (entry k v)
+            prev_entry))))))
+
+(define-fun get_max_count ((map AssocList)) Real
+  (key-e (get_max_count_p map)))
+
+(define-fun-rec set ((map AssocList) (k Real) (v Int)) AssocList
+  (cons-al k v map))
+
+(synth-fun mode_online ((prev_out Real) (prev_counts AssocList) (__x Real)) Int
+  ((I Int) (R Real) (AL AssocList))
+  ((I Int
+   (1
+    (+ I I)
+    (get AL R)))
+   (R Real
+    (__x
+    (get_max_count AL)))
+   (AL AssocList
+    (prev_counts
+     (set AL R I)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec gen_counts ((xs List)) AssocList
+  (match xs
+    ((nil nil-al)
+     ((cons hd tl) 
+      (let ((prev_counts (gen_counts tl)))
+        (set prev_counts hd (+ (get prev_counts hd) 1)))))))
+
+(define-fun mode ((xs List)) Real
+  (get_max_count (gen_counts xs)))
+
+(constraint
+  (forall ((xs List))
+    (=> (not ((_ is nil) xs))
+        (= (mode xs)
+           (mode_online (mode (tl xs)) (gen_counts (tl xs)) (hd xs))))))
+
+(check-synth)

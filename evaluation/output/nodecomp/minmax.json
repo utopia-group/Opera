@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_mn prev_mx x__ -> (-prev_mx + prev_out + x__ if (prev_mn + prev_out - x__ < 0.0) else prev_out if (prev_mn - x__ <= 0.0) else prev_mn + prev_out - x__, (x__ if (prev_mx - prev_out - x__ > 0.0) else prev_mn, x__ if (prev_mn + prev_out - x__ < 0.0) else prev_mn + prev_out))",
+  "qe_time": 26.2778959274292,
+  "syn_time": 19.90482807159424,
+  "parse_time": 0.0011026859283447266,
+  "test_time": 0.2579152584075928,
+  "total_time": 46.44174790382385,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    24,
+    9,
+    11
+  ],
+  "offline_ast_size": 17,
+  "online_ast_size": 47
+}

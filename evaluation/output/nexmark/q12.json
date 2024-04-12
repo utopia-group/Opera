@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_bid_times prev_result x__ -> (let S = {} in let S = let S = S{bid_times = prev_bid_times; result = prev_out} in S{bid_times = python({**bid_times, bid['bidder']: [t for t in bid_times.setdefault(bid['bidder'], []) if tx - t <= 10] + [tx]}); result = python([*result, {'bidder': bid['bidder'], 'bid_count': len(bid_times[bid['bidder']]), 'starttime': tx - 10, 'endtime': tx}])} in S[result], (S[bid_times], S[result]))",
+  "qe_time": 0.0003788471221923828,
+  "syn_time": 0.0030469894409179688,
+  "parse_time": 0.00832986831665039,
+  "test_time": 4.996994972229004,
+  "total_time": 5.008760690689087,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    43,
+    0
+  ],
+  "offline_ast_size": 44,
+  "online_ast_size": 46
+}

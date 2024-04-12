@@ -1,0 +1,5 @@
+(
+(define-fun last_online ((prev_len Int) (prev_last Real) (prev_last2 Real) (__x Real)) Real __x)
+(define-fun last2_online ((prev_len Int) (prev_last Real) (prev_last2 Real) (__x Real)) Real prev_last)
+)
+time=0

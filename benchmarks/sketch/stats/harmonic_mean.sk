@@ -1,0 +1,45 @@
+include "math.skh";
+
+pragma options "--bnd-arr-size 3";
+pragma options "--bnd-unroll-amnt 10";
+
+generator double simple_expr(fun choices, int bnd) {
+    assert bnd > 0;
+    if (??) {
+        return choices();
+    } else {
+        return {| simple_expr(choices, bnd-1) (+ | - | * | /) simple_expr(choices, bnd-1) |};
+    }
+}
+
+double sum_reciprocal(int len, double[len] in) {
+    double s = 0.0;
+    for (int i = 0; i < len; i++) {
+        s += 1.0 / in[i];
+    }
+    return s;
+}
+
+double hmean(int len, double[len] in) {
+    return _cast_int_double(len) / sum_reciprocal(len, in);
+}
+
+double hmean_online(double prev_out, int prev_len, double x) {
+    double prev_s = _cast_int_double(prev_len) / prev_out;
+    double l_ = _cast_int_double(prev_len);
+    generator double gen() {
+        return {| prev_out | prev_s | x | l_ | 1.0 |};
+    }
+    return simple_expr(gen, 5);
+}
+
+harness void main(double[3] in) {
+
+    int len = 3;
+
+    int prev_len = len - 1;
+    double prev_out = hmean(prev_len, in[0::len-1]);
+    double new_out = hmean(len, in);
+
+    assert new_out == hmean_online(prev_out, prev_len, in[len-1]);
+}

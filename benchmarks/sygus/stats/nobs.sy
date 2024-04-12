@@ -1,0 +1,31 @@
+(set-logic UFDTNIRA)
+
+(synth-fun nobs_online ((prev_out Int) (prev_len Int) (prev_n Int) (__x Real)) Int
+  ((I Int))
+  ((I Int
+    (1
+     prev_out
+     prev_len
+     prev_n
+     (to_int __x)
+     (+ I I)
+     (- I I)
+     (* I I)
+     (div I I)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(constraint
+  (forall ((xs List))
+    (=> (not ((_ is nil) xs))
+        (= (len xs)
+           (nobs_online (len (tl xs)) (len (tl xs)) (len (tl xs)) (hd xs))))))
+
+(check-synth)

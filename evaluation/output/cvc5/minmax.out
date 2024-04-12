@@ -1,0 +1,4 @@
+(
+(define-fun max_online ((prev_out Real) (prev_mx Real) (__x Real)) Real (ite (< __x prev_out) prev_out __x))
+)
+time=17

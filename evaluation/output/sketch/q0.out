@@ -1,0 +1,159 @@
+SKETCH version 1.7.6
+Benchmark = /workspaces/batch2stream/benchmarks/sketch/nexmark/q0.sk
+/* BEGIN PACKAGE ANONYMOUS*/
+struct Bid {
+    int auction;
+    int bidder;
+    int dateTime;
+    int price;
+    int extra;
+    char url;
+    char channel;
+}
+struct List<T> {
+    @Immutable()
+}
+struct Cons<T> extends List@ANONYMOUS {
+    T val;
+    List<T> next;
+    @Immutable()
+}
+struct Nil<T> extends List@ANONYMOUS {
+    @Immutable()
+}
+/*q0.sk:64*/
+
+void _main (int auction_1, int bidder_1, int dateTime_1, int price_1, int extra_1, char url_1, char channel_1, int auction_2, int bidder_2, int dateTime_2, int price_2, int extra_2, char url_2, char channel_2, int auction_3, int bidder_3, int dateTime_3, int price_3, int extra_3, char url_3, char channel_3)/*q0.sk:64*/
+{
+  Bid@ANONYMOUS bid_1 = new Bid(auction=auction_1, bidder=bidder_1, dateTime=dateTime_1, price=price_1, extra=extra_1, url=url_1, channel=channel_1);
+  Bid@ANONYMOUS bid_2 = new Bid(auction=auction_2, bidder=bidder_2, dateTime=dateTime_2, price=price_2, extra=extra_2, url=url_2, channel=channel_2);
+  Bid@ANONYMOUS bid_3 = new Bid(auction=auction_3, bidder=bidder_3, dateTime=dateTime_3, price=price_3, extra=extra_3, url=url_3, channel=channel_3);
+  Bid[3] in = ((Bid[3]){bid_1,bid_2,bid_3});
+  List@ANONYMOUS<Bid> prev_out_s8 = null;
+  query(2, in[0::2], prev_out_s8);
+  List@ANONYMOUS<Bid> new_out_s10 = null;
+  query(3, in, new_out_s10);
+  List@ANONYMOUS<Bid> _out_s12 = null;
+  query_online(prev_out_s8, in[2], _out_s12);
+  bit _out_s14 = 0;
+  equals_List_s0(new_out_s10, _out_s12, 6, _out_s14);
+  assert (_out_s14); //Assert at q0.sk:99 (0)
+}
+/*q0.sk:30*/
+
+void add <T> (List<T> lst, T val, ref List<T> _out)/*q0.sk:30*/
+{
+  _out = new Cons<T>(val=val, next=lst);
+  return;
+}
+/*q0.sk:17*/
+
+void empty <T> (ref List<T> _out)/*q0.sk:17*/
+{
+  _out = new Nil<T>();
+  return;
+}
+/*q0.sk:99*/
+@IsEquals() 
+void equals_List_s0 (List@ANONYMOUS<Bid> left_s1, List@ANONYMOUS<Bid> right_s2, int bnd_s3, ref bit _out)/*q0.sk:99*/
+{
+  if(bnd_s3 <= 0)/*q0.sk:99*/
+  {
+    _out = 0;
+    return;
+  }
+  if((left_s1 == (null)) && (right_s2 == (null)))/*q0.sk:99*/
+  {
+    _out = 1;
+    return;
+  }
+  if(left_s1 == (null))/*q0.sk:99*/
+  {
+    _out = 0;
+    return;
+  }
+  if(right_s2 == (null))/*q0.sk:99*/
+  {
+    _out = 0;
+    return;
+  }
+  switch(left_s1){/*q0.sk:99*/
+    case Cons:
+    {
+      switch(right_s2){/*q0.sk:99*/
+        case Cons:
+        {
+          bit _pac_sc_s4 = (left_s1.val) == (right_s2.val);
+          if(_pac_sc_s4)/*q0.sk:99*/
+          {
+            bit _pac_sc_s4_s6 = 0;
+            equals_List_s0(left_s1.next, right_s2.next, bnd_s3 - 1, _pac_sc_s4_s6);
+            _pac_sc_s4 = _pac_sc_s4_s6;
+          }
+          _out = _pac_sc_s4;
+          return;
+        }
+        case default:
+        {
+          _out = 0;
+          return;
+        }
+      }
+    }
+    case Nil:
+    {
+      switch(right_s2){/*q0.sk:99*/
+        case Nil:
+        {
+          _out = 1;
+          return;
+        }
+        case default:
+        {
+          _out = 0;
+          return;
+        }
+      }
+    }
+  }
+}
+/*q0.sk:64*/
+
+void main__Wrapper (int auction_1, int bidder_1, int dateTime_1, int price_1, int extra_1, char url_1, char channel_1, int auction_2, int bidder_2, int dateTime_2, int price_2, int extra_2, char url_2, char channel_2, int auction_3, int bidder_3, int dateTime_3, int price_3, int extra_3, char url_3, char channel_3)  implements main__WrapperNospec/*q0.sk:64*/
+{
+  _main(auction_1, bidder_1, dateTime_1, price_1, extra_1, url_1, channel_1, auction_2, bidder_2, dateTime_2, price_2, extra_2, url_2, channel_2, auction_3, bidder_3, dateTime_3, price_3, extra_3, url_3, channel_3);
+}
+/*q0.sk:64*/
+
+void main__WrapperNospec (int auction_1, int bidder_1, int dateTime_1, int price_1, int extra_1, char url_1, char channel_1, int auction_2, int bidder_2, int dateTime_2, int price_2, int extra_2, char url_2, char channel_2, int auction_3, int bidder_3, int dateTime_3, int price_3, int extra_3, char url_3, char channel_3)/*q0.sk:64*/
+{ }
+/*q0.sk:52*/
+
+void query (int len, Bid[len] in, ref List<Bid> _out)/*q0.sk:52*/
+{
+  List@ANONYMOUS<Bid> res_s28 = null;
+  empty(res_s28)//{T=Bid};
+  List@ANONYMOUS<Bid> res;
+  res = res_s28;
+  for(int i = 0; i < len; i = i + 1)/*Canonical*/
+  {
+    List@ANONYMOUS<Bid> res_s30 = null;
+    add(res, in[i], res_s30)//{T=Bid};
+    res = res_s30;
+  }
+  _out = res;
+  return;
+}
+/*q0.sk:60*/
+
+void query_online (List<Bid> prev_res, Bid x, ref List<Bid> _out)/*q0.sk:60*/
+{
+  List@ANONYMOUS<Bid> _out_s22 = null;
+  add(prev_res, x, _out_s22)//{T=Bid};
+  _out = _out_s22;
+  return;
+}
+/* END PACKAGE ANONYMOUS*/
+[SKETCH] DONE
+Total time = 650
+time=1

@@ -1,0 +1,16 @@
+{
+  "solution": "\\prev_out prev_s prev_m2 prev_len x__ -> (let S = {} in let S = S{s = 0} in let S = S{s = prev_s + x__} in let S = S{mean = (s / (prev_len + 1)); m2 = 0} in let S = S{m2 = ((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_m2*(prev_len**2 + prev_len) + prev_s**2)/(prev_len**2 + prev_len))} in let S = S{variance = (m2 / ((prev_len + 1) - 1)); std = (variance ^ 0.5)} in (S[std] / ((prev_len + 1) ^ 0.5)), (prev_s + x__, ((prev_len**2*x__**2 - 2*prev_len*prev_s*x__ + prev_m2*(prev_len**2 + prev_len) + prev_s**2)/(prev_len**2 + prev_len)), (prev_len + 1)))",
+  "qe_time": 1.9107978343963623,
+  "syn_time": 34.76165199279785,
+  "parse_time": 0.0018339157104492188,
+  "test_time": 0.3239421844482422,
+  "total_time": 36.998234033584595,
+  "num_exprs_to_synthesize": 3,
+  "exprs_sizes": [
+    2,
+    30,
+    3
+  ],
+  "offline_ast_size": 31,
+  "online_ast_size": 58
+}

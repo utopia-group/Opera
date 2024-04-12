@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_mn prev_mx x__ -> (let S = {} in let S = let S = S{mn = (prev_mn); mx = (prev_mx)} in S{mn = if (n < mn) then n else mn; mx = if (n > mx) then n else mx} in (S[mx] - S[mn]), (S[mn], S[mx]))",
+  "qe_time": 3.0994415283203125e-06,
+  "syn_time": 1201.6656131744385,
+  "parse_time": 0.0021698474884033203,
+  "test_time": 0.3540151119232178,
+  "total_time": 1202.0218098163605,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    15,
+    0
+  ],
+  "offline_ast_size": 17,
+  "online_ast_size": 18
+}

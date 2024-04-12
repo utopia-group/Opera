@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_t prev_new_bid x__ -> (let S = {} in let S = let S = S{t = prev_t; new_bid = prev_out} in S{t = python({**x, 'dt': x['dateTime'].strftime('%Y-%m-%d'), 'hm': x['dateTime'].strftime('%H:%M')}); new_bid = python([*new_bid, t])} in S[new_bid], (S[t], S[new_bid]))",
+  "qe_time": 0.0005311965942382812,
+  "syn_time": 0.0036122798919677734,
+  "parse_time": 0.005606174468994141,
+  "test_time": 5.40985894203186,
+  "total_time": 5.419620513916016,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    21,
+    0
+  ],
+  "offline_ast_size": 22,
+  "online_ast_size": 24
+}

@@ -1,0 +1,52 @@
+;; foldl (\x -> \y -> if x < y then x else y) 100 xs
+;;
+;; EApp(EApp(
+;;    VPreludeFunc("foldl"), 
+;;    ELam("x", ELam("y", EIte(EBinOp(EVar("x"), BinOpKinds.GT, EVar("y")), EVar("x"), EVar("y"))))),
+;;    EInt(0))
+
+(set-logic UFDTNIRA)
+
+(synth-fun max_online ((prev_out Real) (prev_mx Real) (__x Real)) Real
+  ((R Real) (B Bool))
+  ((R Real
+    (prev_out
+     prev_mx
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)
+     (ite B R R)))
+   (B Bool
+    ((< R R)
+     (= R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun min2 ((x Real) (y Real)) Real
+  (ite (< x y) x y))
+
+(define-fun max2 ((x Real) (y Real)) Real
+  (ite (> x y) x y))
+
+(define-fun-rec min ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (min2 hd (min tl))))))
+
+(define-fun-rec max ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (max2 hd (max tl))))))
+
+(constraint
+  (forall ((xs List))
+    (=> (not ((_ is nil) xs))
+      (=> (< 0.0 (min xs))
+        (= (max xs)
+           (max_online (max (tl xs)) (max (tl xs)) (hd xs)))))))
+
+(check-synth)

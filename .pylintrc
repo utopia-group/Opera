@@ -1,0 +1,14 @@
+[MESSAGES CONTROL]
+disable=invalid-name
+
+[FORMAT]
+max-line-length=120
+
+[DESIGN]
+
+# Maximum number of locals for function / method body
+max-locals=20
+
+# Maximum number of arguments for function / method
+max-args=10
+

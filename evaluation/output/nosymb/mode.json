@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_counts x__ -> (let S = {} in let S = let S = S{counts = prev_counts} in S{counts = python({**counts, x: counts.get(x, 0) + 1})} in let S = foldl(\\S xc -> S{v = if (snd(xc) > v) then snd(xc) else v; k = if (snd(xc) > v) then fst(xc) else k}, S{k = 0; v = 0}, python(list(S['counts'].items()))) in S[k], (S[counts]))",
+  "qe_time": 2.1457672119140625e-06,
+  "syn_time": 0.0019588470458984375,
+  "parse_time": 0.0029649734497070312,
+  "test_time": 0.46195006370544434,
+  "total_time": 0.4668846130371094,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    13
+  ],
+  "offline_ast_size": 36,
+  "online_ast_size": 37
+}

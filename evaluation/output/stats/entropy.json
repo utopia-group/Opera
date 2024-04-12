@@ -1,0 +1,15 @@
+{
+  "solution": "\\prev_out prev_s prev_ent_s x__ -> (let S = {} in let S = S{s = 0.0} in let S = S{s = prev_s + x__} in let S = S{ent_s = 0.0} in let S = S{ent_s = (prev_ent_s*prev_s - prev_s*log(prev_s) + prev_s*log(prev_s + x__) - x__*log(x__) + x__*log(prev_s + x__))/(prev_s + x__)} in S[ent_s], (prev_s + x__, (prev_ent_s*prev_s - prev_s*log(prev_s) + prev_s*log(prev_s + x__) - x__*log(x__) + x__*log(prev_s + x__))/(prev_s + x__)))",
+  "qe_time": 3.7117459774017334,
+  "syn_time": 0.004757881164550781,
+  "parse_time": 0.0021271705627441406,
+  "test_time": 0.23862624168395996,
+  "total_time": 3.9572651386260986,
+  "num_exprs_to_synthesize": 2,
+  "exprs_sizes": [
+    33,
+    3
+  ],
+  "offline_ast_size": 21,
+  "online_ast_size": 48
+}

@@ -1,0 +1,61 @@
+(set-logic UFDTNIRA)
+
+(synth-fun tmean_online ((prev_out Real) (prev_len Int) (prev_s Real) (prev_n Int) (l Real) (r Real) (__x Real)) Real
+  ((R Real) (B Bool))
+  ((R Real
+    (1.0
+     prev_out
+     (to_real prev_len)
+     prev_s
+     (to_real prev_n)
+     l
+     r
+     __x
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)
+     (ite B R R)))
+   (B Bool
+    ((< R R)
+     (<= R R)
+     (> R R)
+     (>= R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun-rec mean ((xs List)) Real
+  (/ (sum xs) (len xs)))
+
+(define-fun-rec filter ((xs List) (l Real) (r Real)) List
+  (match xs
+    ((nil nil)
+     ((cons hd tl) 
+        (let ((filtered (filter tl l r)))
+          (ite (and (<= l hd) (>= r hd))
+            (cons hd filtered)
+            filtered))))))
+
+(define-fun tmean ((xs List) (l Real) (r Real)) Real
+  (mean (filter xs l r)))
+
+(constraint
+  (forall ((xs List) (l Real) (r Real))
+    (=> (not ((_ is nil) (filter xs l r)))
+        (= (tmean xs l r)
+           (let ((filter_tl (filter (tl xs) l r)))
+            (tmean_online (tmean (tl xs) l r) (len (tl xs)) (sum filter_tl) (len filter_tl) l r (hd xs)))))))
+
+(check-synth)

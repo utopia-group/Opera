@@ -1,0 +1,61 @@
+(set-logic UFDTNIRA)
+
+(synth-fun tmin_online ((prev_mn Real) (__x Real) (l Real) (r Real)) Real
+  ((R Real) (B Bool))
+  ((R Real
+    (prev_mn
+     __x
+     l
+     r
+     (+ R R)
+     (- R R)
+     (* R R)
+     (/ R R)
+     (ite B R R)))
+   (B Bool
+    ((< R R)
+     (= R R)))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun min2 ((x Real) (y Real)) Real
+  (ite (< x y) x y))
+
+(define-fun max2 ((x Real) (y Real)) Real
+  (ite (> x y) x y))
+
+(define-fun-rec min ((xs List)) Real
+  (match xs
+    ((nil 100.0)
+     ((cons hd tl) (min2 hd (min tl))))))
+
+(define-fun-rec max ((xs List)) Real
+  (match xs
+    ((nil 100.0)
+     ((cons hd tl) (max2 hd (max tl))))))
+
+(define-fun-rec filter ((xs List) (l Real) (r Real)) List
+  (match xs
+    ((nil nil)
+     ((cons hd tl) 
+        (let ((filtered (filter tl l r)))
+          (ite (and (<= l hd) (>= r hd))
+            (cons hd filtered)
+            filtered))))))
+
+(define-fun tmin ((xs List) (l Real) (r Real)) Real
+  (min (filter xs l r)))
+
+(define-fun tmax ((xs List) (l Real) (r Real)) Real
+  (max (filter xs l r)))
+
+(constraint
+  (forall ((xs List) (l Real) (r Real))
+    (=> (not ((_ is nil) xs))
+      (=> (> 100.0 (tmax xs l r))
+        (= (tmin xs l r)
+           (tmin_online (tmin (tl xs) l r) (hd xs) l r))))))
+
+(check-synth)

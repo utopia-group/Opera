@@ -1,0 +1,14 @@
+{
+  "solution": "\\prev_out prev_mn x__ -> (let S = {} in let S = S{mn = 10000.0} in let S = S{mn = x__ if (prev_mn - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_mn} in S[mn], (x__ if (prev_mn - x__ >= 0.0) and (limit_l - x__ <= 0.0) else prev_mn))",
+  "qe_time": 8.435444116592407,
+  "syn_time": 0.11493611335754395,
+  "parse_time": 0.000988006591796875,
+  "test_time": 0.1020498275756836,
+  "total_time": 8.653425216674805,
+  "num_exprs_to_synthesize": 1,
+  "exprs_sizes": [
+    12
+  ],
+  "offline_ast_size": 14,
+  "online_ast_size": 19
+}

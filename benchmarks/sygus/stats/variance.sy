@@ -1,0 +1,76 @@
+(set-logic UFDTNIRA)
+
+(synth-fun variance_online ((prev_out Real) (prev_s Real) (prev_sq_s Real) (prev_avg Real) (prev_len Int) (__x Real)) Real
+  ((R Real))
+  ((R Real
+    (
+      ; prev_out
+    ;  prev_s
+    ;  prev_sq_s
+     prev_avg
+    ;  (to_real prev_len)
+     __x
+     (+ R R)
+     (- R R)
+    ;  (* (- __x cur_avg) (- __x prev_avg))
+     (* R R)
+    ;  (/ R R)
+     ))))
+
+(declare-datatype List
+  ((nil)
+   (cons (hd Real) (tl List))))
+
+(define-fun-rec len ((xs List)) Int
+  (match xs
+    ((nil 0)
+     ((cons hd tl) (+ 1 (len tl))))))
+
+(define-fun-rec sum ((xs List)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ hd (sum tl))))))
+
+(define-fun mean ((xs List)) Real
+  (/ (sum xs) (len xs)))
+
+(define-fun sq ((x Real)) Real
+  (* x x))
+
+(define-fun-rec sum_sq_diff ((xs List) (mu Real)) Real
+  (match xs
+    ((nil 0.0)
+     ((cons hd tl) (+ (sq (- hd mu)) (sum_sq_diff tl mu))))))
+
+(define-fun sum_sq ((xs List)) Real
+  (sum_sq_diff xs 0.0))
+     
+(define-fun variance ((xs List)) Real
+  (let ((mu (mean xs)))
+    (/ (sum_sq_diff xs mu) (len xs))))
+
+(declare-var xs0 Real)
+(declare-var xs1 Real)
+(declare-var xs2 Real)
+(declare-var x Real)
+
+; (constraint
+;   (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+;     (= (sum_sq_diff xs (mean xs))
+;        (variance_online (variance (tl xs)) (sum (tl xs)) (sum_sq (tl xs)) (mean (tl xs)) (len (tl xs)) (hd xs)))))
+
+(define-fun sum_sq_mean ((xs List)) Real
+  (sum_sq_diff xs (mean xs)))
+
+(constraint
+  (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+    (= (* (- x (mean xs)) (- x (mean (tl xs))))
+    ; (sum_sq_mean xs) (sum_sq_mean (tl xs)))
+       (variance_online (variance (tl xs)) (sum (tl xs)) (sum_sq (tl xs)) (mean (tl xs)) (len (tl xs)) x))))
+
+; (constraint
+;   (let ((xs (cons x (cons xs0 (cons xs1 nil)))))
+;     (= (variance xs)
+;        (variance_online (variance (tl xs)) (sum (tl xs)) (sum_sq (tl xs)) (mean (tl xs)) (len (tl xs)) (hd xs)))))
+
+(check-synth)
